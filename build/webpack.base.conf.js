@@ -3,8 +3,9 @@ var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
 
+// 获取路径
 function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+  return path.join(__dirname, '..', dir)// __dirname:当前目录 ..表示向上一级 这里返回: ../dir
 }
 
 module.exports = {
@@ -21,7 +22,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      '@': resolve('src')
+      'src': resolve('src'),
+      'commone': resolve('src/common') // 设置src别名
     }
   },
   module: {

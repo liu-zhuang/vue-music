@@ -1,12 +1,17 @@
-import Vue from 'vue'
-import App from './App'
-import router from './router'
+import Vue from 'vue';
+import App from './App';
+import router from './router';
 
-Vue.config.productionTip = false
+import 'src/common/less/index.less'; // build/webpack.base.conf.js 中的src别名
+
+Vue.config.productionTip = false;
+
+
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  render: h => h(App)
-})
+	el: '#app',
+	router,
+	render: h => h(App)
+});
+
