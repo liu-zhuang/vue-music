@@ -22,8 +22,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'src': resolve('src'),
-      'commone': resolve('src/common') // 设置src别名
+       'less': resolve('src/common/less'), // 设置src别名
+       'com': resolve('src/components')
     }
   },
   module: {
