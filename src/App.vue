@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">
-@import 'common/less/index.less'; // common 别名
+@import './common/less/index.less'; // common 别名
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
