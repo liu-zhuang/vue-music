@@ -28,5 +28,6 @@ module.exports = {
     'semi': ['error','always'],// 强制使用分号，否则报错
     'indent':0,// 不check 缩进
     'no-tabs':0,// 不check no-tabs也就是允许使用tab缩进，
+    'no-mixed-spaces-and-tabs': 0
   }
 }

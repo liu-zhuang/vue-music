@@ -9,6 +9,7 @@
 <script>
 import MHeader from 'com/m-header/m-header'; // 驼峰写法
 import Tab from 'com/tab/tab';
+
 export default {
 	name: 'app',
 	components: {
