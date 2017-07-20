@@ -1,9 +1,9 @@
 <template>
 	<div v-if="sliders.length > 0 " class="slider-wrapper">
 		<slider>
-			<div   v-for="item in sliders">
-				<a href="">
-					<img :src="item.picUrl">
+			<div v-for="item in sliders">
+				<a :href="item.linkUrl">
+					<img :src="item.picUrl" alt="">
 				</a>
 			</div>
 		</slider>
@@ -11,18 +11,19 @@
 </template>
 
 <script>
-	import { ERR_OK } from 'api/config';
-	import { getRecommend } from 'api/recommend';
+	import {ERR_OK} from 'api/config';
+	import {getRecommend} from 'api/recommend';
 	import Slider from 'base/slider/slider';
+
 	export default {
 		name: 'Recommend',
-		components: {
-			Slider
-		},
 		data () {
 			return {
 				sliders: []
 			};
+		},
+		components: {
+			Slider
 		},
 		created () {
 			this._getRecommend();
@@ -44,7 +45,7 @@
 </script>
 
 <style lang="less">
-	.sliderItem {
-
+	.slider-wrapper {
+		margin: 5px 0 ;
 	}
 </style>
