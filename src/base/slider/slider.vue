@@ -17,7 +17,8 @@
 		data () {
 			return {
 				dots: [],
-				currentIndex: 0
+				currentIndex: 0,
+				bscroll: {}
 			};
 		},
 		props: {
@@ -69,7 +70,7 @@
 				this.$refs.sliderGroup.style.width = sliderWrapperWidth + 'px';
 			},
 			_initDots () {
-				this.dots = new Array(this.$refs.sliderGroup.children.length + 2).fill('');
+				this.dots = new Array(this.$refs.sliderGroup.children.length).fill('');
 			},
 			_initSlider () {
 				this.bscroll = new BScroll(this.$refs.slider, {
@@ -79,7 +80,18 @@
 					snap: true,
 					snapLoop: this.loop,
 					snapThreshold: 0.3,
-					snapSpeed: 400
+					snapSpeed: 400,
+					click: true
+				});
+
+				this.bscroll.on('scrollEnd', () => {
+					// 获取当前页码
+					let pageIndex = this.bscroll.getCurrentPage().pageX;
+					// 如果是循环的，实际页码需要减一 (因为前后各加了一个图)
+					if (this.loop) {
+						pageIndex -= 1;
+					}
+					this.currentIndex = pageIndex;
 				});
 			}
 		}
@@ -101,8 +113,7 @@
 			flex-flow: row nowrap;
 			.slider-item {
 				img {	
-					height: inherit;			
-					width: inherit; /* 这里如果写100%有问题,原因不明，写inherit或者100vw均可实现每个轮播图占满屏的效果，先这样实现着 */
+					width: 100%; /* 这里如果写100%有问题,原因不明，写inherit或者100vw均可实现每个轮播图占满屏的效果，先这样实现着 */
 				}
 			}
 		}
