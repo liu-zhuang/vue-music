@@ -11,7 +11,7 @@
 
 <script>
 	import { addCssClass } from 'common/js/dom';
-	import BScroll from 'better-scroll';
+	import BScroll from 'better-scroll'; // https://github.com/ustbhuangyi/better-scroll
 
 	export default {
 		data () {
@@ -41,9 +41,19 @@
 				this._initDots();
 				this._initSlider();
 			});
+
+			// 监听resize 事件，防止缩放或者转动之后轮播图尺寸计算有误
+			window.addEventListener('resize', () => {
+				// 如果还没有生成better-scroll 则不需要重新计算
+				if (!this.bscroll) {
+					return;
+				} else {
+					this._getSliderWidth(true);
+				}
+			});
 		},
 		methods: {
-			_getSliderWidth () {
+			_getSliderWidth (isReset) {
 				// 注意，这里有个特殊设置，是在recommend.vue的文件中，slider组件的容器中增加了v-if, 否则在children中还没有元素的时候，就来执行这段代码了。
 				// 获取所有轮播图元素
 				let children = this.$refs.sliderGroup.children;
@@ -62,7 +72,7 @@
 
 				// 如果是循环的话，需要在前后各加一张图片，以使得无缝链接
 				// 因此宽度需要加2个图片的宽度
-				if (this.loop) {
+				if (this.loop && !isReset) {
 					sliderWrapperWidth += 2 * sliderWidth;
 				}
 
@@ -84,6 +94,7 @@
 					click: true
 				});
 
+				// 轮播图滚完的事件 切换当前页码
 				this.bscroll.on('scrollEnd', () => {
 					// 获取当前页码
 					let pageIndex = this.bscroll.getCurrentPage().pageX;
@@ -92,7 +103,31 @@
 						pageIndex -= 1;
 					}
 					this.currentIndex = pageIndex;
+
+					// 实现循环播放
+					if (this.loop) {
+						// 防止手动滑动之后，马上触发滑动
+						// 因此每次滚动完之后都重新计时
+						clearTimeout(this.timer);
+						this._next();
+					}
 				});
+
+				// 自动播放
+				if (this.autoplay) {
+					setTimeout(() => {
+						this._next();
+					}, this.Interval);
+				}
+			},
+			_next () {
+				let pageIndex = this.currentIndex + 1;
+				if (this.loop) {
+					pageIndex += 1;
+				}
+				this.timer = setTimeout(() => {
+					this.bscroll.goToPage(pageIndex, 0, this.Interval);
+				}, this.Interval); // 这里一定要使用setTimeout 才能实现无缝滑动，否则到最后一个会出现倒退回到第一个图的效果
 			}
 		}
 	};
@@ -113,7 +148,8 @@
 			flex-flow: row nowrap;
 			.slider-item {
 				img {	
-					width: 100%; /* 这里如果写100%有问题,原因不明，写inherit或者100vw均可实现每个轮播图占满屏的效果，先这样实现着 */
+					height: 150px;
+					width: 100%; /* 这里如果写100%有问题,原因不明，写inherit或者100vw均可实现每个轮播图占满屏的效果，先这样实现着,补充，如果在img外面加个a标签，就可以使用100%了 */
 				}
 			}
 		}
