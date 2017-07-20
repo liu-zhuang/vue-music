@@ -26,6 +26,7 @@ module.exports = {
        'less': resolve('src/common/less'), // 设置less别名
        'com': resolve('src/components'), // 设置组件别名
        'api': resolve('src/api'), // 设置api别名
+       'base': resolve('src/base'), // 设置base
     }
   },
   module: {
