@@ -14,52 +14,30 @@ export function getRecommend () {
 
 export function getDissList () {
 	const url = '/api/getDissList';
-	// const data = Object.assign({}, queryParameters, {
-	// 	rnd: 0.00880744612222606,
-	// 	loginUin: 70458055,
-	// 	hostUin: 0,
-	// 	format: 'json',
-	// 	inCharset: 'utf8',
-	// 	outCharset: 'utf,-8',
-	// 	notice: 0,
-	// 	platform: 'yqq',
-	// 	needNewCode: 0,
-	// 	categoryId: 10000000,
-	// 	sortId: 5,
-	// 	sin: 0,
-	// 	ein: 29
-	// });
-	// let opt = Object.assign({}, options, {
-	// 	jsonpCallbackFunction: 'MusicJsonCallback'
-	// });
-	// return fetchJsonp(url, data, opt);
-	const data = Object.assign({}, options, {
-		platform: 'yqq',
+	const data = Object.assign({}, queryParameters, {
+		rnd: Math.random(),
+		loginUin: 70458055,
 		hostUin: 0,
-		sin: 0,
-		ein: 29,
-		sortId: 5,
+		format: 'json',
+		inCharset: 'utf8',
+		outCharset: 'utf-8',
+		notice: 0,
+		platform: 'yqq',
 		needNewCode: 0,
 		categoryId: 10000000,
-		rnd: Math.random(),
-		format: 'json'
+		sortId: 5,
+		sin: 0,
+		ein: 29
 	});
-
-	// return new Promise((resolve, reject) => {
-	// 	axios.get(url, {
-	// 		params: data
-	// 	})
-	// 	.then(res => {
-	// 		debugger;
-	// 		resolve(res.data);
-	// 	})
-	// 	.catch(err => {
-	// 		reject(err);
-	// 	});
-	// });
-	return axios.get(url, {
-		params: data
-	}).then((res) => {
-		return Promise.resolve(res.data);
+	return new Promise((resolve, reject) => {
+		axios.get(url, {
+			params: data
+		})
+		.then(res => {
+			resolve(res.data);
+		})
+		.catch(err => {
+			reject(err);
+		});
 	});
 }

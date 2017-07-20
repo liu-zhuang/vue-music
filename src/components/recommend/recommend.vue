@@ -1,12 +1,19 @@
 <template>
-	<div v-if="sliders.length > 0 " class="slider-wrapper">
-		<slider>
-			<div v-for="item in sliders">
-				<a :href="item.linkUrl">
-					<img :src="item.picUrl" alt="">
-				</a>
-			</div>
-		</slider>
+	<div>
+		<div v-if="sliders.length > 0 " class="slider-wrapper">
+			<slider>
+				<div v-for="item in sliders">
+					<a :href="item.linkUrl">
+						<img :src="item.picUrl" alt="">
+					</a>
+				</div>
+			</slider>
+		</div>
+		<div class="dissList">
+			<span v-for="item in dissList">
+				{{item.dissname}}
+			</span>
+		</div>
 	</div>
 </template>
 
@@ -19,7 +26,8 @@
 		name: 'Recommend',
 		data () {
 			return {
-				sliders: []
+				sliders: [],
+				dissList: []
 			};
 		},
 		components: {

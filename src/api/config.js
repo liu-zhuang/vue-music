@@ -4,7 +4,6 @@
  */
  export const queryParameters = {
  	g_tk: 902235244
- 	// format: 'jsonp'
  };
 
 /**
