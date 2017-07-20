@@ -105,7 +105,7 @@
 					this.currentIndex = pageIndex;
 
 					// 实现循环播放
-					if (this.loop) {
+					if (this.autoplay) {
 						// 防止手动滑动之后，马上触发滑动
 						// 因此每次滚动完之后都重新计时
 						clearTimeout(this.timer);
