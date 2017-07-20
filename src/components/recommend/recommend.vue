@@ -2,7 +2,7 @@
 	<div v-if="sliders.length > 0 " class="slider-wrapper">
 		<slider>
 			<div v-for="item in sliders">
-				<a href="#">
+				<a :href="item.linkUrl">
 					<img :src="item.picUrl" alt="">
 				</a>
 			</div>

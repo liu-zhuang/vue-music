@@ -18,7 +18,8 @@
 			return {
 				dots: [],
 				currentIndex: 0,
-				bscroll: {}
+				bscroll: {},
+				timer: {}
 			};
 		},
 		props: {
@@ -32,7 +33,7 @@
 			},
 			Interval: {
 				type: Number,
-				default: 2000
+				default: 1000
 			}
 		},
 		mounted () {
@@ -49,11 +50,16 @@
 					return;
 				} else {
 					this._getSliderWidth(true);
+					this.bscroll.refresh();
 				}
 			});
 		},
 		methods: {
-			_getSliderWidth (isReset) {
+			/**
+			 * [_getSliderWidth 计算轮播图宽度，设置轮播图容器宽度
+			 * @param  {Boolean} isReset 是否属于重置
+			 */
+			 _getSliderWidth (isReset) {
 				// 注意，这里有个特殊设置，是在recommend.vue的文件中，slider组件的容器中增加了v-if, 否则在children中还没有元素的时候，就来执行这段代码了。
 				// 获取所有轮播图元素
 				let children = this.$refs.sliderGroup.children;
@@ -90,7 +96,7 @@
 					snap: true,
 					snapLoop: this.loop,
 					snapThreshold: 0.3,
-					snapSpeed: 400,
+					snapSpeed: 800,
 					click: true
 				});
 
@@ -103,7 +109,6 @@
 						pageIndex -= 1;
 					}
 					this.currentIndex = pageIndex;
-
 					// 实现循环播放
 					if (this.autoplay) {
 						// 防止手动滑动之后，马上触发滑动
@@ -126,7 +131,7 @@
 					pageIndex += 1;
 				}
 				this.timer = setTimeout(() => {
-					this.bscroll.goToPage(pageIndex, 0, this.Interval);
+					this.bscroll.goToPage(pageIndex, 0, 800);
 				}, this.Interval); // 这里一定要使用setTimeout 才能实现无缝滑动，否则到最后一个会出现倒退回到第一个图的效果
 			}
 		}
