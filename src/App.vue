@@ -2,7 +2,10 @@
 	<div id="app">
 		<m-header></m-header>
 		<tab></tab>
-		<router-view></router-view>
+		<!-- 缓存页面 -->
+		<keep-alive>
+			<router-view></router-view>
+		</keep-alive>
 	</div>
 </template>
 

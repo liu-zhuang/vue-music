@@ -55,6 +55,10 @@ export default {
 			}
 		});
 	},
+	destroyed () {
+		// 每次页面销毁时，最好都干掉页面上的计时器，释放内存
+		clearTimeout(this.timer);
+	},
 	methods: {
 		/**
 		 * [_getSliderWidth 计算轮播图宽度，设置轮播图容器宽度

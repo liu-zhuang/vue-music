@@ -11,8 +11,8 @@
 </template>
 
 <script>
-	import {ERR_OK} from 'api/config';
-	import {getRecommend} from 'api/recommend';
+	import { ERR_OK } from 'api/config';
+	import { getRecommend, getDissList } from 'api/recommend';
 	import Slider from 'base/slider/slider';
 
 	export default {
@@ -27,6 +27,7 @@
 		},
 		created () {
 			this._getRecommend();
+			this._getDissList();
 		},
 		methods: {
 			_getRecommend () {
@@ -34,6 +35,17 @@
 				.then(res => {
 					if (res.code === ERR_OK) {
 						this.sliders = res.data.slider;
+					}
+				})
+				.catch(err => {
+					console.log(err);
+				});
+			},
+			_getDissList () {
+				getDissList()
+				.then(res => {
+					if (res.code === ERR_OK) {
+						this.dissList = res.data.list;
 					}
 				})
 				.catch(err => {

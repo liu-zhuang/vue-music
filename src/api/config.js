@@ -3,8 +3,8 @@
  * 固定的几个值
  */
  export const queryParameters = {
- 	g_tk: 902235244,
- 	format: 'jsonp'
+ 	g_tk: 902235244
+ 	// format: 'jsonp'
  };
 
 /**
