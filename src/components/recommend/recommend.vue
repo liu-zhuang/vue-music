@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="recommend">
 		<div v-if="sliders.length > 0 " class="slider-wrapper">
 			<slider>
 				<div v-for="item in sliders">
@@ -9,10 +9,20 @@
 				</div>
 			</slider>
 		</div>
-		<div class="dissList">
-			<span v-for="item in dissList">
-				{{item.dissname}}
-			</span>
+
+		<div class="recommend-list">
+			<h1 class="list-title">热门歌单推荐</h1>
+			<ul class="dissList">
+				<li class="diss" v-for="diss in dissList">
+					<div class="diss-image">
+						<img :src="diss.imgurl"></img>
+					</div>
+					<div class="diss-text">
+						<h2 class="creator" v-html="diss.creator.name"></h2>
+						<p class="dissname" v-html="diss.dissname"></p>
+					</div>
+				</li>
+			</ul>
 		</div>
 	</div>
 </template>
@@ -64,8 +74,64 @@
 	};
 </script>
 
-<style lang="less">
-	.slider-wrapper {
-		margin: 5px 0 ;
+<style scoped lang="less">
+	@import '~less/variable.less';
+
+	.recommend {
+		width: 100%;
+		.slider-wrapper {
+			margin: 5px 0 ;
+		}
+
+		.list-title {
+			height: 65px;
+			line-height: 65px;
+			text-align: center;
+			font-size: @font-size-medium;
+			color: @color-theme;
+		}
+
+		.dissList {
+			width: 100%;
+			margin: 0 2px;
+			overflow:hidden;
+			display: flex;
+			flex-flow: column nowrap;
+		}
+		.diss {
+			width: 100%;
+			height: 80px;
+			display: flex;
+			flex-flow: row nowrap;
+			margin: 2px 0;
+			&:first-child,&:last-child {
+				margin: 0;
+			}
+			.diss-image {
+				flex: 0 0 80px;
+				img {
+					height: 80px;
+				}
+			}
+			.diss-text {
+				flex: 1 1 auto;
+				overflow: hidden;
+				display: flex;
+				flex-flow: column nowrap;
+				justify-content: center;
+				align-content: center;
+				font-size: @font-size-medium;
+				box-sizing: border-box;
+				padding: 0 10px;
+				.creator {
+					color: @color-text;
+					margin-bottom: 10px;
+				}
+				.dissname {
+					color: @color-text-d;
+				}
+			}
+		}	
 	}
+
 </style>
