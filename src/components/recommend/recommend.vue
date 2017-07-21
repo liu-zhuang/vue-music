@@ -6,7 +6,7 @@
 					<slider>
 						<div v-for="item in sliders">
 							<a :href="item.linkUrl">
-								<img @load="loadImage":src="item.picUrl" alt="">
+								<img @load="loadImage":src="item.picUrl" alt="" @click="clickPic">
 							</a>
 						</div>
 					</slider>
@@ -26,7 +26,7 @@
 					</ul>
 				</div>
 			</div>
-			<loading v-if="!dissList.length"></loading>
+			<loading v-if="!dissList.length" ltext="loading..."></loading>
 		</scroll>
 	</div>
 </template>
@@ -83,6 +83,9 @@
 					this.checkloaded = true;
 					this.$refs.scroll.refresh();
 				}
+			},
+			clickPic () {
+				console.log('click pic');
 			}
 		}
 	};
