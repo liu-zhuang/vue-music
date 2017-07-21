@@ -1,32 +1,33 @@
 <template>
-	<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
-		<div class="recommend">
-			<div v-if="sliders.length > 0 " class="slider-wrapper">
-				<slider>
-					<div v-for="item in sliders">
-						<a :href="item.linkUrl">
-							<img @load="loadImage":src="item.picUrl" alt="">
-						</a>
-					</div>
-				</slider>
-			</div>
-
-			<div class="recommend-list">
-				<h1 class="list-title">热门歌单推荐</h1>
-				<ul class="dissList">
-					<li class="diss" v-for="diss in dissList">
-						<div class="diss-image">
-							<img :src="diss.imgurl"></img>
+	<div class="recommend-wrapper">
+		<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
+			<div>
+				<div v-if="sliders.length > 0 " class="slider-wrapper">
+					<slider>
+						<div v-for="item in sliders">
+							<a :href="item.linkUrl">
+								<img @load="loadImage":src="item.picUrl" alt="">
+							</a>
 						</div>
-						<div class="diss-text">
-							<h2 class="creator" v-html="diss.creator.name"></h2>
-							<p class="dissname" v-html="diss.dissname"></p>
-						</div>
-					</li>
-				</ul>
+					</slider>
+				</div>
+				<div class="recommend-list">
+					<h1 class="list-title">热门歌单推荐</h1>
+					<ul class="dissList">
+						<li class="diss" v-for="diss in dissList">
+							<div class="diss-image">
+								<img :src="diss.imgurl"></img>
+							</div>
+							<div class="diss-text">
+								<h2 class="creator" v-html="diss.creator.name"></h2>
+								<p class="dissname" v-html="diss.dissname"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
-		</div>
-	</scroll>
+		</scroll>
+	</div>
 </template>
 
 <script>
@@ -87,16 +88,14 @@
 <style scoped lang="less">
 	@import '~less/variable.less';
 	
-	.scrollContainer {
-		display: flex;
-		flex-direction: column;
-		height: 100vh;
+	.recommend-wrapper {
+		position: absolute;
+		top: 88px;
+		bottom: 0px;
+		width: 100%;
 		overflow: hidden;
-		.recommend {
-			width: 100%;
-			.slider-wrapper {
-				margin: 5px 0 ;
-			}
+		.scrollContainer {
+			height: 100%;
 
 			.list-title {
 				height: 65px;
@@ -146,10 +145,9 @@
 						color: @color-text-d;
 					}
 				}
-			}	
+			}
 		}
+
+		
 	}
-
-	
-
 </style>
