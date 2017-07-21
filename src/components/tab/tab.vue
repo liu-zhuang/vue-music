@@ -1,16 +1,16 @@
 <template>
 	<ul class="tab">
 		<li class="item">
-			<router-link to="/recommend">推荐</router-link>
+			<router-link to="/recommend"><a>推荐</a></router-link>
 		</li>
 		<li class="item">
-			<router-link to="/singer">歌手</router-link>
+			<router-link to="/singer"><a>歌手</a></router-link>
 		</li>
 		<li class="item">
-			<router-link to="/rank">排行</router-link>
+			<router-link to="/rank"><a>排行</a></router-link>
 		</li>
 		<li class="item">
-			<router-link to="/search">搜索</router-link>
+			<router-link to="/search"><a>搜索</a></router-link>
 		</li>
 	</ul>
 </template>
@@ -27,14 +27,17 @@
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: flex-start;
-		margin: 10px 0 ;
+		height: 44px;
+		box-sizing: border-box;
 		.item {
 			flex: 1 0 auto;
 			text-align: center;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
 		}
 	}
-
-	.router-link-active {
+	.router-link-active a {
 		border-bottom: solid 2px @color-theme;
 		color: @color-theme;
 	}
