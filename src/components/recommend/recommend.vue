@@ -26,6 +26,7 @@
 					</ul>
 				</div>
 			</div>
+			<loading v-if="!dissList.length"></loading>
 		</scroll>
 	</div>
 </template>
@@ -35,6 +36,7 @@
 	import { getRecommend, getDissList } from 'api/recommend';
 	import Slider from 'base/slider/slider';
 	import Scroll from 'base/scroll/scroll';
+	import Loading from 'base/loading/loading';
 
 	export default {
 		name: 'Recommend',
@@ -46,7 +48,8 @@
 		},
 		components: {
 			Slider,
-			Scroll
+			Scroll,
+			Loading
 		},
 		created () {
 			this._getRecommend();
@@ -147,6 +150,5 @@
 				}
 			}
 		}
-
 	}
 </style>
