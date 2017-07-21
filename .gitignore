@@ -13,3 +13,5 @@ yarn-error.log*
 *.sln
 
 Tree.MD
+
+package-lock.json

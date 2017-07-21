@@ -24,7 +24,9 @@ module.exports = {
     alias: {
       'common': resolve('src/common'), // common别名
        'less': resolve('src/common/less'), // 设置less别名
-       'com': resolve('src/components') // 设置组件别名
+       'com': resolve('src/components'), // 设置组件别名
+       'api': resolve('src/api'), // 设置api别名
+       'base': resolve('src/base'), // 设置base别名
     }
   },
   module: {
