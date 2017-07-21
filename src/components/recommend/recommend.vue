@@ -16,7 +16,7 @@
 					<ul class="dissList">
 						<li class="diss" v-for="diss in dissList">
 							<div class="diss-image">
-								<img :src="diss.imgurl"></img>
+								<img v-lazy="diss.imgurl"></img>
 							</div>
 							<div class="diss-text">
 								<h2 class="creator" v-html="diss.creator.name"></h2>
@@ -148,6 +148,5 @@
 			}
 		}
 
-		
 	}
 </style>
