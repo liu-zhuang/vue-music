@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-
+import 'babel-polyfill';
 import VueLazyload from 'vue-lazyload';
 import fastclick from 'fastclick';
 // 样式

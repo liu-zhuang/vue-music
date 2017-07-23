@@ -102,7 +102,6 @@
 		overflow: hidden;
 		.scrollContainer {
 			height: 100%;
-
 			.list-title {
 				height: 65px;
 				line-height: 65px;
