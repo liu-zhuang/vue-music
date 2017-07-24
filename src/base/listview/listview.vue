@@ -1,6 +1,6 @@
 <template>
 	<!-- <div class="listview"> -->
-	<scroll ref="scroll" :probeType="3" :data="data" class="scroll-wrapper">
+	<scroll ref="scroll" :probeType="3" :data="data" :listenScroll="true" class="scroll-wrapper" @scroll="onScroll">
 		<div>
 			<div v-for="group in data" class="group" ref="group">
 				<h3 class="group-title">{{group.title}}</h3>
@@ -32,6 +32,9 @@
 		created () {
 			// 因为不涉及双向绑定，因此不需要直接写在data里面
 			this.touch = {};
+			this.$nextTick(() => {
+				this._calcHeight();
+			});
 		},
 		data () {
 			return {
@@ -89,6 +92,36 @@
 				}
 				// 滚动到当前应该所在的索引处
 				this.$refs.scroll.scrollToElement(group[this.currentIndex], 0);
+			},
+			onScroll (pos) {
+				this._calcPosition(pos.y);
+			},
+			_calcHeight () {
+				// 计算歌手列表中各个group的高度
+				const group = this.$refs.group;
+				this.heightArray = [];
+				this.heightArray.push(0);
+				for (let i = 0; i < group.length; i++) {
+					this.heightArray[i + 1] = this.heightArray[i] + group[i].clientHeight;
+				}
+			},
+			_calcPosition (posY) {
+				if (posY > 0) {
+					this.currentIndex = 0;
+				} else if (posY < -this.heightArray[this.heightArray.length - 1]) {
+					this.currentIndex = this.heightArray.length - 1;
+				} else {
+					// 计算当前位置区间,找出第一个大于的位置
+					let matchPos = this.heightArray.findIndex((val, index) => {
+						return val > Math.abs(posY);
+					});
+					console.log(matchPos);
+					if (matchPos !== -1) {
+						this.currentIndex = matchPos - 1;
+					} else {
+						this.currentIndex = 0;
+					}
+				}
 			}
 		}
 	};
