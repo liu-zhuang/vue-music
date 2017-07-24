@@ -17,7 +17,10 @@
 			:data-index="index"
 			:class="{'active':currentIndex===index}"
 			>{{shortcut}}</li>
-		</ul>		
+		</ul>
+		<div  v-show="currentTitle" class="fixed-title">
+			{{currentTitle}}
+		</div>
 	</scroll>
 		<!-- <div class="shortcut">
 			
@@ -38,7 +41,8 @@
 		},
 		data () {
 			return {
-				currentIndex: 0
+				currentIndex: 0,
+				scrollY: 0
 			};
 		},
 		components: {
@@ -55,6 +59,15 @@
 				return this.data.map(item => {
 					return item.title;
 				});
+			},
+			currentTitle () {
+				if (!this.scrollY) {
+					return '';
+				} else if (this.scrollY && this.scrollY > 0) {
+					return '';
+				} else {
+					return this.shortcutList[this.currentIndex];
+				}
 			}
 		},
 		methods: {
@@ -96,6 +109,7 @@
 			onScroll (pos) {
 				// 滚动时，传入当前的纵坐标，计算当前右边应该高亮哪个字母
 				this._calcPosition(pos.y);
+				this.scrollY = pos.y;
 			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
@@ -175,7 +189,7 @@
 		width: 20px;
 		right: 10px;
 		top:50%;
-		transform: translateY(-50%);
+		transform: translateY(-40%);
 		background-color: white;
 		display: flex;
 		flex-flow: column nowrap;
@@ -184,7 +198,7 @@
 		font-family: Helvetica;
 		.item {
 			margin: 2px 0;
-			font-size: 8px;
+			font-size: 12px;
 			text-align: center;
 			color: @color-text-l;
 			font-size: @font-size-small;
@@ -200,5 +214,16 @@
 		}
 		border-radius: 10px;
 	}
-	
+	.fixed-title {
+		position: fixed;
+		top: 88px;
+		left: 0;
+		width: 100%;
+		padding-left: 20px;
+		height: 30px;
+		line-height: 30px;
+		background-color: @color-highlight-background;
+		color: @color-text-l;
+		font-size: @font-size-small;
+	}
 </style>
