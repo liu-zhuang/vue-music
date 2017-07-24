@@ -18,7 +18,7 @@
 			:class="{'active':currentIndex===index}"
 			>{{shortcut}}</li>
 		</ul>
-		<div  v-show="currentTitle" class="fixed-title">
+		<div ref="fixedTitle" v-show="currentTitle" class="fixed-title">
 			{{currentTitle}}
 		</div>
 	</scroll>
@@ -42,7 +42,8 @@
 		data () {
 			return {
 				currentIndex: 0,
-				scrollY: 0
+				scrollY: 0,
+				diff: 0
 			};
 		},
 		components: {
@@ -67,6 +68,16 @@
 					return '';
 				} else {
 					return this.shortcutList[this.currentIndex];
+				}
+			}
+		},
+		watch: {
+			diff (newVal) {
+				if (newVal < 30) {
+					const distance = 30 - newVal;
+					this.$refs.fixedTitle.style.transform = `translateY(-${distance}px)`;
+				} else {
+					this.$refs.fixedTitle.style.transform = '';
 				}
 			}
 		},
@@ -134,6 +145,7 @@
 					let matchPos = this.heightArray.findIndex((val, index) => {
 						return val > Math.abs(posY);
 					});
+					this.diff = this.heightArray[matchPos] - Math.abs(posY);
 					// 因为this.heightArray是从0开始的，因此当前选中Index要-1
 					if (matchPos !== -1) {
 						this.currentIndex = matchPos - 1;
