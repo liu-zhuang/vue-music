@@ -94,28 +94,33 @@
 				this.$refs.scroll.scrollToElement(group[this.currentIndex], 0);
 			},
 			onScroll (pos) {
+				// 滚动时，传入当前的纵坐标，计算当前右边应该高亮哪个字母
 				this._calcPosition(pos.y);
 			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
 				const group = this.$refs.group;
 				this.heightArray = [];
+				// 默认增加一个0
 				this.heightArray.push(0);
 				for (let i = 0; i < group.length; i++) {
 					this.heightArray[i + 1] = this.heightArray[i] + group[i].clientHeight;
 				}
 			},
 			_calcPosition (posY) {
+				// 向下滚动时纵坐标是负数，向上滚动应该不改变选中第一个的状态
 				if (posY > 0) {
 					this.currentIndex = 0;
 				} else if (posY < -this.heightArray[this.heightArray.length - 1]) {
+					// 滚到最下面的时候应该选中最后一个
 					this.currentIndex = this.heightArray.length - 1;
 				} else {
+					// 在首尾之间正常滚动时
 					// 计算当前位置区间,找出第一个大于的位置
 					let matchPos = this.heightArray.findIndex((val, index) => {
 						return val > Math.abs(posY);
 					});
-					console.log(matchPos);
+					// 因为this.heightArray是从0开始的，因此当前选中Index要-1
 					if (matchPos !== -1) {
 						this.currentIndex = matchPos - 1;
 					} else {
