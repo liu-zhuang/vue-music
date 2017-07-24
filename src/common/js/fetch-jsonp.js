@@ -19,15 +19,13 @@ export default function fetchJsonp (url, data, option) {
 let getUrl = function (url, data) {
 	let parms = '';
 	Object.keys(data).forEach(val => {
-		parms += `${val}=${data[val]}`;
+		parms += `&${val}=${data[val]}`;
 	});
 	if (!url.endsWith('?')) {
 		url = url + '?';
 	}
-
 	if (parms !== '' && parms.startsWith('&')) {
 		parms = parms.substring(1, parms.length - 1);
 	}
-	console.log(url + parms);
 	return url + parms;
 };

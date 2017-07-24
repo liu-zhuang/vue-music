@@ -1,29 +1,33 @@
 <template>
-	<div class="recommend">
-		<div v-if="sliders.length > 0 " class="slider-wrapper">
-			<slider>
-				<div v-for="item in sliders">
-					<a :href="item.linkUrl">
-						<img :src="item.picUrl" alt="">
-					</a>
+	<div class="recommend-wrapper">
+		<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
+			<div>
+				<div v-if="sliders.length > 0 " class="slider-wrapper">
+					<slider>
+						<div v-for="item in sliders">
+							<a :href="item.linkUrl">
+								<img @load="loadImage":src="item.picUrl" alt="" @click="clickPic">
+							</a>
+						</div>
+					</slider>
 				</div>
-			</slider>
-		</div>
-
-		<div class="recommend-list">
-			<h1 class="list-title">热门歌单推荐</h1>
-			<ul class="dissList">
-				<li class="diss" v-for="diss in dissList">
-					<div class="diss-image">
-						<img :src="diss.imgurl"></img>
-					</div>
-					<div class="diss-text">
-						<h2 class="creator" v-html="diss.creator.name"></h2>
-						<p class="dissname" v-html="diss.dissname"></p>
-					</div>
-				</li>
-			</ul>
-		</div>
+				<div class="recommend-list">
+					<h1 class="list-title">热门歌单推荐</h1>
+					<ul class="dissList">
+						<li class="diss" v-for="diss in dissList">
+							<div class="diss-image">
+								<img v-lazy="diss.imgurl"></img>
+							</div>
+							<div class="diss-text">
+								<h2 class="creator" v-html="diss.creator.name"></h2>
+								<p class="dissname" v-html="diss.dissname"></p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<loading v-if="!dissList.length" ltext="loading..."></loading>
+		</scroll>
 	</div>
 </template>
 
@@ -31,6 +35,8 @@
 	import { ERR_OK } from 'api/config';
 	import { getRecommend, getDissList } from 'api/recommend';
 	import Slider from 'base/slider/slider';
+	import Scroll from 'base/scroll/scroll';
+	import Loading from 'base/loading/loading';
 
 	export default {
 		name: 'Recommend',
@@ -41,7 +47,9 @@
 			};
 		},
 		components: {
-			Slider
+			Slider,
+			Scroll,
+			Loading
 		},
 		created () {
 			this._getRecommend();
@@ -69,6 +77,15 @@
 				.catch(err => {
 					console.log(err);
 				});
+			},
+			loadImage () {
+				if (!this.checkloaded) {
+					this.checkloaded = true;
+					this.$refs.scroll.refresh();
+				}
+			},
+			clickPic () {
+				console.log('click pic');
 			}
 		}
 	};
@@ -76,62 +93,64 @@
 
 <style scoped lang="less">
 	@import '~less/variable.less';
-
-	.recommend {
+	
+	.recommend-wrapper {
+		position: absolute;
+		top: 88px;
+		bottom: 0px;
 		width: 100%;
-		.slider-wrapper {
-			margin: 5px 0 ;
-		}
-
-		.list-title {
-			height: 65px;
-			line-height: 65px;
-			text-align: center;
-			font-size: @font-size-medium;
-			color: @color-theme;
-		}
-
-		.dissList {
-			width: 100%;
-			margin: 0 2px;
-			overflow:hidden;
-			display: flex;
-			flex-flow: column nowrap;
-		}
-		.diss {
-			width: 100%;
-			height: 80px;
-			display: flex;
-			flex-flow: row nowrap;
-			margin: 2px 0;
-			&:first-child,&:last-child {
-				margin: 0;
+		overflow: hidden;
+		.scrollContainer {
+			height: 100%;
+			.list-title {
+				height: 65px;
+				line-height: 65px;
+				text-align: center;
+				font-size: @font-size-medium;
+				color: @color-theme;
 			}
-			.diss-image {
-				flex: 0 0 80px;
-				img {
-					height: 80px;
-				}
-			}
-			.diss-text {
-				flex: 1 1 auto;
-				overflow: hidden;
+
+			.dissList {
+				width: 100%;
+				margin: 0 2px;
+				overflow:hidden;
 				display: flex;
 				flex-flow: column nowrap;
-				justify-content: center;
-				align-content: center;
-				font-size: @font-size-medium;
-				box-sizing: border-box;
-				padding: 0 10px;
-				.creator {
-					color: @color-text;
-					margin-bottom: 10px;
+			}
+			.diss {
+				width: 100%;
+				height: 80px;
+				display: flex;
+				flex-flow: row nowrap;
+				margin: 2px 0;
+				&:first-child,&:last-child {
+					margin: 0;
 				}
-				.dissname {
-					color: @color-text-d;
+				.diss-image {
+					flex: 0 0 80px;
+					img {
+						height: 80px;
+					}
+				}
+				.diss-text {
+					flex: 1 1 auto;
+					overflow: hidden;
+					display: flex;
+					flex-flow: column nowrap;
+					justify-content: center;
+					align-content: center;
+					font-size: @font-size-medium;
+					box-sizing: border-box;
+					padding: 0 10px;
+					.creator {
+						color: @color-text;
+						margin-bottom: 10px;
+					}
+					.dissname {
+						color: @color-text-d;
+					}
 				}
 			}
-		}	
+		}
 	}
-
 </style>

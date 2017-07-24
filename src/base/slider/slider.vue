@@ -11,7 +11,7 @@
 
 <script>
 
-	import { addCssClass } from 'common/js/dom';
+import { addCssClass } from 'common/js/dom';
 import BScroll from 'better-scroll'; // https://github.com/ustbhuangyi/better-scroll
 
 export default {

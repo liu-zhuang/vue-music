@@ -7,7 +7,6 @@
  	if (hasCssClass(el, className)) {
  		return;
  	}
-
  	let orginClass = el.className.split(' ');
  	orginClass.push(className);
  	el.className = orginClass.join(' ');
