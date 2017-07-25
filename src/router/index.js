@@ -31,6 +31,7 @@ export default new Router({
 		component: Singer,
 		children: [{
 			path: ':id',
+			component: SingerDetail // https://router.vuejs.org/zh-cn/essentials/nested-routes.html
 		}]
 	}
 	]
