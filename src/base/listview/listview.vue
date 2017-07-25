@@ -4,7 +4,7 @@
 		<div>
 			<div v-for="group in data" class="group" ref="group">
 				<h3 class="group-title">{{group.title}}</h3>
-				<div v-for="singer in group.data" class="group-content">
+				<div v-for="singer in group.data" class="group-content" @click="onSingerClick(singer)">
 					<img v-lazy="singer.avator" class="avator">
 					<span class="name">{{singer.singerName}}</span>
 				</div>
@@ -17,7 +17,10 @@
 			:data-index="index"
 			:class="{'active':currentIndex===index}"
 			>{{shortcut}}</li>
-		</ul>		
+		</ul>
+		<div ref="fixedTitle" v-show="currentTitle" class="fixed-title">
+			{{currentTitle}}
+		</div>
 	</scroll>
 		<!-- <div class="shortcut">
 			
@@ -38,7 +41,9 @@
 		},
 		data () {
 			return {
-				currentIndex: 0
+				currentIndex: 0,
+				scrollY: 0,
+				diff: 0
 			};
 		},
 		components: {
@@ -55,6 +60,25 @@
 				return this.data.map(item => {
 					return item.title;
 				});
+			},
+			currentTitle () {
+				if (!this.scrollY) {
+					return '';
+				} else if (this.scrollY && this.scrollY > 0) {
+					return '';
+				} else {
+					return this.shortcutList[this.currentIndex];
+				}
+			}
+		},
+		watch: {
+			diff (newVal) {
+				if (newVal < 30) {
+					const distance = 30 - newVal;
+					this.$refs.fixedTitle.style.transform = `translateY(-${distance}px)`;
+				} else {
+					this.$refs.fixedTitle.style.transform = '';
+				}
 			}
 		},
 		methods: {
@@ -96,6 +120,10 @@
 			onScroll (pos) {
 				// 滚动时，传入当前的纵坐标，计算当前右边应该高亮哪个字母
 				this._calcPosition(pos.y);
+				this.scrollY = pos.y;
+			},
+			onSingerClick (singer) {
+				this.$emit('singerClick', singer);
 			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
@@ -120,6 +148,7 @@
 					let matchPos = this.heightArray.findIndex((val, index) => {
 						return val > Math.abs(posY);
 					});
+					this.diff = this.heightArray[matchPos] - Math.abs(posY);
 					// 因为this.heightArray是从0开始的，因此当前选中Index要-1
 					if (matchPos !== -1) {
 						this.currentIndex = matchPos - 1;
@@ -175,7 +204,7 @@
 		width: 20px;
 		right: 10px;
 		top:50%;
-		transform: translateY(-50%);
+		transform: translateY(-40%);
 		background-color: white;
 		display: flex;
 		flex-flow: column nowrap;
@@ -184,7 +213,7 @@
 		font-family: Helvetica;
 		.item {
 			margin: 2px 0;
-			font-size: 8px;
+			font-size: 12px;
 			text-align: center;
 			color: @color-text-l;
 			font-size: @font-size-small;
@@ -200,5 +229,16 @@
 		}
 		border-radius: 10px;
 	}
-	
+	.fixed-title {
+		position: fixed;
+		top: 88px;
+		left: 0;
+		width: 100%;
+		padding-left: 20px;
+		height: 30px;
+		line-height: 30px;
+		background-color: @color-highlight-background;
+		color: @color-text-l;
+		font-size: @font-size-small;
+	}
 </style>
