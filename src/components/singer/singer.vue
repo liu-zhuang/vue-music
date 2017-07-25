@@ -1,6 +1,7 @@
 <template>
 	<div v-if="groupArray.length > 0" class="singer-wrapper">
-		<listview :data="groupArray"></listview>
+		<listview :data="groupArray" @singerClick="onSingerClick"></listview>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -25,11 +26,15 @@
 			};
 		},
 		mounted () {
+			console.log(this.$route.path, this.$route.params, this.$route.query, this.$route.matched);
 			this.$nextTick(() => {
 				this._getSingerList();
 			});
 		},
 		methods: {
+			onSingerClick (singer) {
+				this.$router.push({path: `/singer/${singer.singerId}`});
+			},
 			/**
 			 * _getSingerList 根据API获取歌手信息
 			 * @return {Array} 歌手数组
