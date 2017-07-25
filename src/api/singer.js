@@ -23,3 +23,22 @@ export function getSingerList () {
 	});
 	return fetchJsonp(url, data, opt);
 }
+
+export function getSingerSongList (singerId) {
+	const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg';
+	const data = Object.assign({}, queryParameters, {
+		order: 'listen',
+		begin: 0,
+		num: 8,
+		singerid: singerId,
+		uin: 70458055,
+		format: 'jsonp',
+		inCharset: 'utf-8',
+		outCharset: 'utf-8',
+		notice: 0,
+		platform: 'h5page',
+		needNewCode: 1,
+		from: 'h5'
+	});
+	return fetchJsonp(url, data, options);
+}

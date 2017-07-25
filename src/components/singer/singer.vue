@@ -10,6 +10,7 @@
 	import {ERR_OK} from 'api/config';
 	import Singer from 'common/js/singer';
 	import Listview from 'base/listview/listview';
+	import {mapMutations} from 'vuex';
 	const HOT_KEY = 'Hot';
 	const HOT_KEYWORD = '热门';
 	const HOT_COUNT = 10;
@@ -26,7 +27,6 @@
 			};
 		},
 		mounted () {
-			console.log(this.$route.path, this.$route.params, this.$route.query, this.$route.matched);
 			this.$nextTick(() => {
 				this._getSingerList();
 			});
@@ -34,6 +34,8 @@
 		methods: {
 			onSingerClick (singer) {
 				this.$router.push({path: `/singer/${singer.singerId}`});
+				// this.$store.commit('set_singer', singer); 常规使用，也可以使用语法糖来实现https://vuex.vuejs.org/zh-cn/mutations.html
+				this.setSinger(singer);
 			},
 			/**
 			 * _getSingerList 根据API获取歌手信息
@@ -61,15 +63,15 @@
 			 		// 取前十条作为热门歌手
 			 		for (let [index, item] of list.entries()) {
 			 			if (index < HOT_COUNT) {
-			 				this.groupList[HOT_KEY].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name));
+			 				this.groupList[HOT_KEY].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id));
 			 			}
 			 			// 如果有则追加,没有则新建一个key
 			 			if (this.groupList[item.Findex]) {
-			 				this.groupList[item.Findex].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name));
+			 				this.groupList[item.Findex].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id));
 			 			} else {
 			 				this.groupList[item.Findex] = {};
 			 				this.groupList[item.Findex].title = item.Findex;
-			 				this.groupList[item.Findex].data = [new Singer(item.Fsinger_mid, item.Fsinger_name)];
+			 				this.groupList[item.Findex].data = [new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id)];
 			 			}
 			 		}
 			 		// 遍历 groupList 重新排序
@@ -90,16 +92,21 @@
 			 		});
 			 		this.groupArray = hotArray.concat(letterArray);
 			 	}
+			 },
+			 // ...属于es6中的对象展开运算符：http://es6.ruanyifeng.com/#docs/object#对象的扩展运算符
+			 // mapMutations 属于vuex语法糖 不需要写this.$store.commit(),映射为this.methods https://vuex.vuejs.org/zh-cn/mutations.html
+			 ...mapMutations({
+			 	setSinger: 'set_singer'
+			 })
 			 }
+			};
+		</script>
+		<style scoped lang="less">
+			.singer-wrapper {
+				position: fixed;
+				top: 88px;
+				bottom: 10px;
+				width: 100%;
+				overflow: hidden;
 			}
-		};
-	</script>
-	<style scoped lang="less">
-		.singer-wrapper {
-			position: fixed;
-			top: 88px;
-			bottom: 10px;
-			width: 100%;
-			overflow: hidden;
-		}
-	</style>
+		</style>
