@@ -27,7 +27,6 @@
 			};
 		},
 		mounted () {
-			console.log(this.$route.path, this.$route.params, this.$route.query, this.$route.matched);
 			this.$nextTick(() => {
 				this._getSingerList();
 			});
@@ -64,15 +63,15 @@
 			 		// 取前十条作为热门歌手
 			 		for (let [index, item] of list.entries()) {
 			 			if (index < HOT_COUNT) {
-			 				this.groupList[HOT_KEY].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name));
+			 				this.groupList[HOT_KEY].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id));
 			 			}
 			 			// 如果有则追加,没有则新建一个key
 			 			if (this.groupList[item.Findex]) {
-			 				this.groupList[item.Findex].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name));
+			 				this.groupList[item.Findex].data.push(new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id));
 			 			} else {
 			 				this.groupList[item.Findex] = {};
 			 				this.groupList[item.Findex].title = item.Findex;
-			 				this.groupList[item.Findex].data = [new Singer(item.Fsinger_mid, item.Fsinger_name)];
+			 				this.groupList[item.Findex].data = [new Singer(item.Fsinger_mid, item.Fsinger_name, item.Fsinger_id)];
 			 			}
 			 		}
 			 		// 遍历 groupList 重新排序

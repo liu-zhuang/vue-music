@@ -1,15 +1,23 @@
 <template>
 	<div class="singer-detail">
-		<span>{{singer.singerName}}</span>
+		<music-list
+		:title="singer.singerName"
+		:bg-img="singer.avator"></music-list>
 	</div>
 </template>
 <script>
 	import {mapGetters} from 'vuex';
-
+	import MusicList from 'base/musiclist/musiclist';
 	export default {
 		name: 'singerDetail',
+		components: {
+			MusicList
+		},
 		created () {
-			console.log(this.$route.path, this.$route.params, this.$route.query, this.$route.matched);
+			// 当在详情页面刷新时，跳转到歌手列表页面
+			if (!this.singer.singerId) {
+				this.$router.push({path: '/singer'});
+			}
 		},
 		computed: {
 			// singer () {
@@ -21,14 +29,15 @@
 	};
 </script>
 <style scoped lang="less">
+	@import '~less/variable.less';
 	.singer-detail {
 		position: fixed;
-		top: 88px;
-		bottom: 10px;
+		top: 0;
+		bottom: 0;
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
 		z-index: 100;
-		background-color: #FFF;
+		background-color: @color-background;
 	}
 </style>
