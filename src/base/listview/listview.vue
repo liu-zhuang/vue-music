@@ -4,7 +4,7 @@
 		<div>
 			<div v-for="group in data" class="group" ref="group">
 				<h3 class="group-title">{{group.title}}</h3>
-				<div v-for="singer in group.data" class="group-content">
+				<div v-for="singer in group.data" class="group-content" @click="onSingerClick(singer)">
 					<img v-lazy="singer.avator" class="avator">
 					<span class="name">{{singer.singerName}}</span>
 				</div>
@@ -121,6 +121,9 @@
 				// 滚动时，传入当前的纵坐标，计算当前右边应该高亮哪个字母
 				this._calcPosition(pos.y);
 				this.scrollY = pos.y;
+			},
+			onSingerClick (singer) {
+				this.$emit('singerClick', singer);
 			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
