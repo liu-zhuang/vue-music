@@ -29,7 +29,7 @@ export function getSingerSongList (singerId) {
 	const data = Object.assign({}, queryParameters, {
 		order: 'listen',
 		begin: 0,
-		num: 8,
+		num: 20,
 		singerid: singerId,
 		uin: 70458055,
 		format: 'jsonp',

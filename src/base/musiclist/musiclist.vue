@@ -8,13 +8,13 @@
 		</div>
 		<!-- 动态设定背景图，使用width:100,height:0,padding-top:70%的方法让图片纵宽比10:7
 		同时需要设置background-size:cover -->
-		<div class="pic" :style="picStyle">
+		<div class="pic" :style="picStyle" ref="img">
 			<!-- 为背景图增加滤镜效果 -->
 			<div class="filter"></div>
 		</div>
-		<scroll>
+		<scroll :data="songList" class="scroll" ref="scroll">
 			<div>
-				<song-list></song-list>
+				<song-list v-if="songList.length > 0" :songList="songList"></song-list>
 			</div>
 		</scroll>
 	</div>
@@ -22,9 +22,8 @@
 <script type="text/javascript">
 	import {mapGetters} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
-	import {getSingerSongList} from 'api/singer';
-	import {ERR_OK} from 'api/config';
 	import SongList from 'base/songlist/songlist';
+	import {CreateSong} from 'common/js/song';
 	export default {
 		name: 'music-list',
 		components: {
@@ -56,11 +55,9 @@
 		},
 		mounted () {
 			this.$nextTick(() => {
-				getSingerSongList(this.singer.key)
-				.then(res => {
-					if (res.code === ERR_OK) {
-						this.songList = res.data.list;
-					}
+				this.songs.forEach(song => {
+					let {musicData} = song;
+					this.songList.push(CreateSong(musicData));
 				});
 			});
 		},
@@ -81,6 +78,9 @@
 	@import '~less/variable.less';
 	.musiclist-wrapper {
 		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
 		.icon-back {
 			position: absolute;
 			top: 10px;
@@ -112,6 +112,11 @@
 				height: 100%;
 				background: rgba(7, 17, 27, 0.4);
 			}
+		}
+		.scroll {
+			position: fixed;
+			top: 289px;
+			bottom: 0;
 		}
 	}
 </style>

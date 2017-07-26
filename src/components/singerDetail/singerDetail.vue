@@ -1,15 +1,24 @@
 <template>
 	<div class="singer-detail">
 		<music-list
+		v-if="songList.length > 0"
 		:title="singer.singerName"
-		:bg-img="singer.avator"></music-list>
+		:bg-img="singer.avator"
+		:songs="songList"></music-list>
 	</div>
 </template>
 <script>
 	import {mapGetters} from 'vuex';
 	import MusicList from 'base/musiclist/musiclist';
+	import {getSingerSongList} from 'api/singer';
+	import {ERR_OK} from 'api/config';
 	export default {
 		name: 'singerDetail',
+		data () {
+			return {
+				songList: []
+			};
+		},
 		components: {
 			MusicList
 		},
@@ -18,6 +27,16 @@
 			if (!this.singer.singerId) {
 				this.$router.push({path: '/singer'});
 			}
+		},
+		mounted () {
+			this.$nextTick(() => {
+				getSingerSongList(this.singer.key)
+				.then(res => {
+					if (res.code === ERR_OK) {
+						this.songList = res.data.list;
+					}
+				});
+			});
 		},
 		computed: {
 			// singer () {
