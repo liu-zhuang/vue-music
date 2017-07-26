@@ -12,18 +12,25 @@
 			<!-- 为背景图增加滤镜效果 -->
 			<div class="filter"></div>
 		</div>
-		<scroll :data="songList" class="scroll" ref="scroll">
-			<div>
-				<song-list v-if="songList.length > 0" :songList="songList"></song-list>
-			</div>
-		</scroll>
-	</div>
+		<div class="layer" ref="layer">
+		</div>
+		<scroll class="scroll" ref="scroll" 
+		:listen-scroll="true"
+		:data="songList"
+		:probe-type="3"
+		@scroll="onScroll">
+		<div>
+			<song-list v-if="songList.length > 0" :songList="songList"></song-list>
+		</div>
+	</scroll>
+</div>
 </template>
 <script type="text/javascript">
 	import {mapGetters} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
+	const IMG_HEADER_HEIGHT = 40;
 	export default {
 		name: 'music-list',
 		components: {
@@ -32,6 +39,8 @@
 		},
 		data () {
 			return {
+				imgHeight: 0,
+				posY: 0,
 				songList: []
 			};
 		},
@@ -59,11 +68,19 @@
 					let {musicData} = song;
 					this.songList.push(CreateSong(musicData));
 				});
+				// 计算顶部背景图的高度，即为下面歌曲列表top的高度
+				this.imgHeight = this.$refs.img.clientHeight;
+				let scroll = this.$refs.scroll.$el; // 因为scroll是Vue Component,因此其html元素为.$el
+				scroll.style.top = this.imgHeight + 'px';
+				this.$refs.layer.style.top = this.imgHeight + 'px';
 			});
 		},
 		methods: {
 			onBackClick () {
 				this.$router.back();
+			},
+			onScroll (pos) {
+				this.posY = pos.y;
 			}
 		},
 		computed: {
@@ -71,6 +88,24 @@
 				return `background-image:url(${this.bgImg})`;
 			},
 			...mapGetters(['singer'])
+		},
+		watch: {
+			posY (newPos) {
+				console.log(newPos);
+				if (newPos > 0) {
+					// newPos
+					const percent = Math.abs(newPos / this.imgHeight);
+					const scale = 1 + percent;
+					console.log(percent);
+					this.$refs.img.style['transform'] = `scale(${scale})`;
+					this.$refs.img.style.zIndex = 40;
+				} else if (-newPos < (this.imgHeight - IMG_HEADER_HEIGHT)) {
+					this.$refs.layer.style.transform = `translateY(${newPos}px)`;
+					this.$refs.img.style.paddingTop = (this.imgHeight - Math.abs(newPos)) + 'px';
+				} else {
+					this.$refs.img.style.zIndex = 35;
+				}
+			}
 		}
 	};
 </script>
@@ -85,7 +120,7 @@
 			position: absolute;
 			top: 10px;
 			left: 10px;
-			z-index: 30;
+			z-index: 40;
 		}
 		.title {
 			height: 40px;
@@ -95,7 +130,7 @@
 			transform: translateX(-50%);
 			font-size: @font-size-large;
 			color: @color-text;
-			z-index: 30;
+			z-index: 40;
 		}
 		.pic {
 			position: relative;
@@ -113,10 +148,21 @@
 				background: rgba(7, 17, 27, 0.4);
 			}
 		}
-		.scroll {
+		.layer {
+			width: 100%;
+			height: 100%;
 			position: fixed;
-			top: 289px;
 			bottom: 0;
+			z-index: 25;
+			// background-color: #fff;
+			background-color: @color-background;
+		}
+		.scroll {
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			bottom: 0;
+			z-index: 30;
 		}
 	}
 </style>

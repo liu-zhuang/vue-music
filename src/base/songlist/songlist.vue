@@ -31,7 +31,9 @@
 
 	.songlist-wrapper {		
 		display: flex;
+		width: 100%;
 		.song-container	{
+			width: 100%;
 			.song {
 				display: flex;
 				flex-flow: row nowrap;
@@ -40,11 +42,16 @@
 				.content {
 					display: flex;
 					flex-flow: column nowrap;
+					box-sizing: border-box;
+					height: 64px;	
+					justify-content: center;
+					font-size: @font-size-medium-x;
+					padding-left: 20px;
 					.song-name {
 						color: @color-text;
 					}
 					.song-desc {
-						margin: 2px 0;
+						margin-top: 10px;
 						color: @color-text-d;
 					}	
 				}
