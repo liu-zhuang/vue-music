@@ -1,6 +1,8 @@
 <template>
-	<div v-if="groupArray.length > 0" class="singer-wrapper">
-		<listview :data="groupArray" @singerClick="onSingerClick"></listview>
+	<div>
+		<div v-if="groupArray.length > 0" class="singer-wrapper">
+			<listview :data="groupArray" @singerClick="onSingerClick"></listview>
+		</div>
 		<router-view></router-view>
 	</div>
 </template>
@@ -98,15 +100,15 @@
 			 ...mapMutations({
 			 	setSinger: 'set_singer'
 			 })
-			 }
-			};
-		</script>
-		<style scoped lang="less">
-			.singer-wrapper {
-				position: fixed;
-				top: 88px;
-				bottom: 10px;
-				width: 100%;
-				overflow: hidden;
 			}
-		</style>
+		};
+	</script>
+	<style scoped lang="less">
+		.singer-wrapper {
+			position: fixed;
+			top: 88px;
+			bottom: 10px;
+			width: 100%;
+			overflow: hidden;
+		}
+	</style>
