@@ -91,18 +91,22 @@
 		},
 		watch: {
 			posY (newPos) {
-				console.log(newPos);
+				console.log(-newPos, this.imgHeight - 40);
+				console.log(this.imgHeight, 40);
 				if (newPos > 0) {
 					// newPos
 					const percent = Math.abs(newPos / this.imgHeight);
 					const scale = 1 + percent;
-					console.log(percent);
 					this.$refs.img.style['transform'] = `scale(${scale})`;
-					this.$refs.img.style.zIndex = 40;
+					this.$refs.img.style.zIndex = 39;
 				} else if (-newPos < (this.imgHeight - IMG_HEADER_HEIGHT)) {
 					this.$refs.layer.style.transform = `translateY(${newPos}px)`;
 					this.$refs.img.style.paddingTop = (this.imgHeight - Math.abs(newPos)) + 'px';
+					this.$refs.img.style['transform'] = 'scale(1)';
+					this.$refs.img.style.zIndex = 20;
 				} else {
+					this.$refs.img.style.paddingTop = IMG_HEADER_HEIGHT + 'px';
+					this.$refs.layer.style.transform = `translateY(${this.imgHeight - IMG_HEADER_HEIGHT}px)`;
 					this.$refs.img.style.zIndex = 35;
 				}
 			}
