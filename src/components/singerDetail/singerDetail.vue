@@ -1,11 +1,13 @@
 <template>
-	<div class="singer-detail">
-		<music-list
-		v-if="songList.length > 0"
-		:title="singer.singerName"
-		:bg-img="singer.avator"
-		:songs="songList"></music-list>
-	</div>
+	<transition	name="slide">
+		<div class="singer-detail">
+			<music-list
+			v-if="songList.length > 0"
+			:title="singer.singerName"
+			:bg-img="singer.avator"
+			:songs="songList"></music-list>
+		</div>
+	</transition>
 </template>
 <script>
 	import {mapGetters} from 'vuex';
@@ -58,4 +60,13 @@
 		z-index: 100;
 		background-color: @color-background;
 	}
+
+	.slide-enter-active, .slide-leave-active {
+		transition: all 0.3s;
+	}	
+
+	.slide-enter, .slide-leave-to {
+		transform: translate3d(100%, 0, 0);
+	}
+	
 </style>
