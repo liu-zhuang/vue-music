@@ -11,6 +11,10 @@
 		<div class="pic" :style="picStyle" ref="img">
 			<!-- 为背景图增加滤镜效果 -->
 			<div class="filter"></div>
+			<div class="play-wrapper" ref="playWrapper">
+				<i class="icon-play"></i>
+				<p>随机播放全部</p>
+			</div>
 		</div>
 		<div class="layer" ref="layer">
 		</div>
@@ -91,19 +95,19 @@
 		},
 		watch: {
 			posY (newPos) {
-				console.log(-newPos, this.imgHeight - 40);
-				console.log(this.imgHeight, 40);
-				if (newPos > 0) {
+				if (newPos >= 0) {
 					// newPos
 					const percent = Math.abs(newPos / this.imgHeight);
 					const scale = 1 + percent;
 					this.$refs.img.style['transform'] = `scale(${scale})`;
 					this.$refs.img.style.zIndex = 39;
+					this.$refs.playWrapper.style.display = '';
 				} else if (-newPos < (this.imgHeight - IMG_HEADER_HEIGHT)) {
 					this.$refs.layer.style.transform = `translateY(${newPos}px)`;
 					this.$refs.img.style.paddingTop = (this.imgHeight - Math.abs(newPos)) + 'px';
 					this.$refs.img.style['transform'] = 'scale(1)';
 					this.$refs.img.style.zIndex = 20;
+					this.$refs.playWrapper.style.display = 'none';
 				} else {
 					this.$refs.img.style.paddingTop = IMG_HEADER_HEIGHT + 'px';
 					this.$refs.layer.style.transform = `translateY(${this.imgHeight - IMG_HEADER_HEIGHT}px)`;
@@ -150,6 +154,25 @@
 				width: 100%;
 				height: 100%;
 				background: rgba(7, 17, 27, 0.4);
+			}
+			.play-wrapper {
+				position: absolute;
+				bottom: 20px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 200px;
+				height: 30px;
+				border: solid 1px @color-theme;
+				border-radius: 15px;
+				z-index: 20;
+				display: flex;
+				flex-flow: row nowrap;
+				justify-content: center;
+				align-items: center;
+				.icon-play {
+					margin-right: 6px;
+					font-size: @font-size-medium-x;
+				}
 			}
 		}
 		.layer {

@@ -1,6 +1,6 @@
 <template>
 	<!-- <div class="listview"> -->
-	<scroll ref="scroll" :probeType="3" :data="data" :listenScroll="true" class="scroll-wrapper" @scroll="onScroll">
+	<scroll ref="scroll" :probeType="3" :data="data" :listenScroll="true" class="scroll-wrapper" @scroll="onScroll" :click="false">
 		<div>
 			<div v-for="group in data" class="group" ref="group">
 				<h3 class="group-title">{{group.title}}</h3>
@@ -14,6 +14,7 @@
 			<li class="item" v-for="(shortcut, index) in shortcutList"
 			@touchstart.stop.prevent="onTouchStartShortcut"
 			@touchmove.stop.prevent="onTouchMoveShortcut"
+			@click.stop.prevent="onShortcutClick"
 			:data-index="index"
 			:class="{'active':currentIndex===index}"
 			>{{shortcut}}</li>
@@ -125,6 +126,19 @@
 			onSingerClick (singer) {
 				this.$emit('singerClick', singer);
 			},
+			onShortcutClick (event) {
+				// ios设备 touchstart有问题，使用click代替
+				// 获取当前在右边的索引
+				const index = getData(event.target, 'index');
+				// 找到左边的父容器
+				const group = this.$refs.group;
+				// 将索引转为Int型, 以便高亮显示
+				this.currentIndex = parseInt(index);
+				// 调用scroll的滚动到元素的事件
+				this.$refs.scroll.scrollToElement(group[index], 0);
+				// 滑动时的起始位置
+				this.touch.pageYStart = event.pageY;
+			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
 				const group = this.$refs.group;
@@ -211,12 +225,15 @@
 		align-items: center;
 		background: @color-background-d;
 		font-family: Helvetica;
+		z-index: 120;
 		.item {
-			margin: 2px 0;
+			// margin: 2px 0;
 			font-size: 12px;
 			text-align: center;
 			color: @color-text-l;
 			font-size: @font-size-small;
+			z-index: 120;
+			padding: 2px;
 			&:first-child {
 				margin-top: 5px;
 			}
