@@ -2,5 +2,10 @@
 // 这里记录vuex中要记录那些状态
 
 export default {
-	singer: {}
+	singer: {},
+	playing: false,
+	fullScreen: false,
+	playList: [],
+	sequencePlayList: [],
+	currentIndex: -1
 };
