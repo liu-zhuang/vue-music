@@ -34,7 +34,10 @@
 	import Scroll from 'base/scroll/scroll';
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
+	import {prefixStyle} from 'common/js/dom';
+
 	const IMG_HEADER_HEIGHT = 40;
+	const prefixTransform = prefixStyle('transform');
 	export default {
 		name: 'music-list',
 		components: {
@@ -99,18 +102,18 @@
 					// newPos
 					const percent = Math.abs(newPos / this.imgHeight);
 					const scale = 1 + percent;
-					this.$refs.img.style['transform'] = `scale(${scale})`;
+					this.$refs.img.style[prefixTransform] = `scale(${scale})`;
 					this.$refs.img.style.zIndex = 39;
 					this.$refs.playWrapper.style.display = '';
 				} else if (-newPos < (this.imgHeight - IMG_HEADER_HEIGHT)) {
-					this.$refs.layer.style.transform = `translateY(${newPos}px)`;
+					this.$refs.layer.style[prefixTransform] = `translateY(${newPos}px)`;
 					this.$refs.img.style.paddingTop = (this.imgHeight - Math.abs(newPos)) + 'px';
-					this.$refs.img.style['transform'] = 'scale(1)';
+					this.$refs.img.style[prefixTransform] = 'scale(1)';
 					this.$refs.img.style.zIndex = 20;
 					this.$refs.playWrapper.style.display = 'none';
 				} else {
 					this.$refs.img.style.paddingTop = IMG_HEADER_HEIGHT + 'px';
-					this.$refs.layer.style.transform = `translateY(${this.imgHeight - IMG_HEADER_HEIGHT}px)`;
+					this.$refs.layer.style[prefixTransform] = `translateY(${this.imgHeight - IMG_HEADER_HEIGHT}px)`;
 					this.$refs.img.style.zIndex = 35;
 				}
 			}
