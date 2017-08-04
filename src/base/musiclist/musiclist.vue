@@ -11,7 +11,7 @@
 		<div class="pic" :style="picStyle" ref="img">
 			<!-- 为背景图增加滤镜效果 -->
 			<div class="filter"></div>
-			<div class="play-wrapper" ref="playWrapper">
+			<div class="play-wrapper" ref="playWrapper" @click="onClickPlayRandom">
 				<i class="icon-play"></i>
 				<p>随机播放全部</p>
 			</div>
@@ -30,7 +30,7 @@
 </div>
 </template>
 <script type="text/javascript">
-	import {mapGetters} from 'vuex';
+	import {mapGetters, mapMutations} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
@@ -88,7 +88,13 @@
 			},
 			onScroll (pos) {
 				this.posY = pos.y;
-			}
+			},
+			onClickPlayRandom () {
+				this.set_playing(true);
+			},
+			...mapMutations({
+				set_playing: 'set_playing'
+			})
 		},
 		computed: {
 			picStyle () {

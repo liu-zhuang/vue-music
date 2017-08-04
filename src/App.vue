@@ -6,18 +6,21 @@
 		<keep-alive>
 			<router-view></router-view>
 		</keep-alive>
+		<player></player>
 	</div>
 </template>
 
 <script>
 import MHeader from 'com/m-header/m-header'; // 驼峰写法
 import Tab from 'com/tab/tab';
+import Player from 'com/player/player';
 
 export default {
 	name: 'app',
 	components: {
 		MHeader,
-		Tab
+		Tab,
+		Player
 	}
 };
 </script>
