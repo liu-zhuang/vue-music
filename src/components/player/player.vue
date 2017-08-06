@@ -1,6 +1,22 @@
 <template>
 	<div class="player" v-show="playing">
-		播放器
+		<div class="normal-player">
+			<div class="background"></div>
+			<div class="top">
+				<div class="icon-down">
+					<i class="icon-back"></i>
+				</div>
+				<div class="song-name"></div>
+				<div class="singer-name"></div>
+			</div>
+			<div class="middle">
+				<div class="cd-pic"></div>
+			</div>
+			<div class="bottom">
+				<div class="operator"></div>
+			</div>
+		</div>
+		<div class="mini-player"></div>
 	</div>
 </template>
 <script>
