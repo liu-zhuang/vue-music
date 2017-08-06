@@ -30,7 +30,7 @@
 </div>
 </template>
 <script type="text/javascript">
-	import {mapGetters, mapMutations} from 'vuex';
+	import {mapGetters, mapMutations, mapActions} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
@@ -90,10 +90,15 @@
 				this.posY = pos.y;
 			},
 			onClickPlayRandom () {
-				this.set_playing(true);
+				this.randomPlay({
+					playList: this.songList
+				});
 			},
 			...mapMutations({
 				set_playing: 'set_playing'
+			}),
+			...mapActions({
+				randomPlay: 'randomPlay'
 			})
 		},
 		computed: {
