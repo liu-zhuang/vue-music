@@ -15,7 +15,25 @@
 				</div>
 			</div>
 			<div class="bottom">
-				<div class="operator"></div>
+				<div class="dot-wrapper"></div>
+				<div class="progress-wrapper"></div>
+				<div class="operator-wrapper">
+					<div class="icon mode">
+						<i :class="iconMode"></i>
+					</div>
+					<div class="icon prev">
+						<i class="icon-prev"></i>
+					</div>
+					<div class="icon btn-play">
+						<i :class="iconPlay"></i>
+					</div>
+					<div class="icon next">
+						<i class="icon-next"></i>
+					</div>
+					<div class="icon favorite">
+						<i :class="iconFavorite"></i>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="mini-player"></div>
@@ -26,6 +44,13 @@
 	import {mapGetters} from 'vuex';
 
 	export default {
+		data () {
+			return {
+				iconMode: 'icon-loop',
+				iconPlay: 'icon-play',
+				iconFavorite: 'icon-not-like'
+			};
+		},
 		mounted () {
 			this.$nextTick(() => {
 			});
@@ -50,6 +75,7 @@
 		bottom: 0;
 		background-color: @color-background;
 		z-index: 100;
+		overflow: hidden;
 		.normal-player {
 			width: 100%;
 			height:100%;
@@ -112,6 +138,20 @@
 					}
 					&.pause {
 						animation-play-state: paused
+					}
+				}
+			}
+			.bottom {
+				position: absolute;
+				bottom: 50px;
+				width: 100%;
+				
+				.operator-wrapper {
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: center;
+					.icon {
+						flex: 1 1 auto;
 					}
 				}
 			}
