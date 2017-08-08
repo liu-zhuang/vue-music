@@ -1,62 +1,87 @@
 <template>
-	<div class="player" v-show="playing">
-		<div class="normal-player">
-			<div class="background" ref="divBg"></div>
-			<div class="top">
-				<div class="icon-down">
-					<i class="icon-back"></i>
+	<div>
+		<div class="player" v-show="playing && fullScreen">
+			<div class="normal-player" v-show="fullScreen">
+				<div class="background" ref="divBg"></div>
+				<div class="top">
+					<div class="icon-down">
+						<i class="icon-back" @click="iconBackClick"></i>
+					</div>
+					<div class="song-name">{{currentSong.songname}}</div>
+					<div class="singer-name">{{currentSong.singer}}</div>
 				</div>
-				<div class="song-name">{{currentSong.songname}}</div>
-				<div class="singer-name">{{currentSong.singer}}</div>
+				<div class="middle">
+					<div class="cd-wrapper" :class="playing ? 'play' : 'pause'">
+						<img class="img-cd" :src="currentSong.img"></img>
+					</div>
+				</div>
+				<div class="bottom">
+					<div class="dot-wrapper"></div>
+					<div class="progress-wrapper"></div>
+					<div class="operator-wrapper">
+						<div class="icon mode">
+							<i :class="iconMode"></i>
+						</div>
+						<div class="icon prev">
+							<i class="icon-prev"></i>
+						</div>
+						<div class="icon btn-play">
+							<i :class="iconPlay"></i>
+						</div>
+						<div class="icon next">
+							<i class="icon-next"></i>
+						</div>
+						<div class="icon favorite">
+							<i :class="iconFavorite"></i>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="middle">
-				<div class="cd-wrapper" :class="playing ? 'play' : 'pause'">
-					<img class="img-cd" :src="currentSong.img"></img>
-				</div>
+			<audio :src="currentSong.url"></audio>
+		</div>
+		<div class="mini-player" v-show="playing && !fullScreen">
+			<div class="mini-icon-wrapper">
+				<img :src="currentSong.img" :class="playing ? 'play' : 'pause'">
 			</div>
-			<div class="bottom">
-				<div class="dot-wrapper"></div>
-				<div class="progress-wrapper"></div>
-				<div class="operator-wrapper">
-					<div class="icon mode">
-						<i :class="iconMode"></i>
-					</div>
-					<div class="icon prev">
-						<i class="icon-prev"></i>
-					</div>
-					<div class="icon btn-play">
-						<i :class="iconPlay"></i>
-					</div>
-					<div class="icon next">
-						<i class="icon-next"></i>
-					</div>
-					<div class="icon favorite">
-						<i :class="iconFavorite"></i>
-					</div>
-				</div>
+			<div class="mini-text-wrapper">
+				<p class="songname">{{currentSong.songname}}</p>
+				<p class="singername">{{currentSong.singer}}</p>
+			</div>
+			<div class="mini-playCtl-wrapper">
+				<i :class="iconPlay"></i>
+			</div>
+			<div class="mini-playlist-wrapper">
+				<i class="icon-playlist"></i>
 			</div>
 		</div>
-		<div class="mini-player"></div>
-		<audio :src="currentSong.url" autoplay="true"></audio>
 	</div>
 </template>
 <script>
-	import {mapGetters} from 'vuex';
+	import {mapGetters, mapMutations} from 'vuex';
 
 	export default {
 		data () {
 			return {
 				iconMode: 'icon-loop',
 				iconPlay: 'icon-play',
-				iconFavorite: 'icon-not-like'
+				iconFavorite: 'icon-not-favorite'
 			};
 		},
 		mounted () {
 			this.$nextTick(() => {
 			});
 		},
+		methods: {
+			iconBackClick () {
+				console.log('click');
+				this.setFullScreen(false);
+			},
+			...mapMutations({
+				setFullScreen: 'set_fullscreen'
+			})
+		},
 		computed: {
-			...mapGetters(['playing', 'currentSong'])
+			...mapGetters(['playing', 'currentSong', 'fullScreen'])
 		},
 		watch: {
 			currentSong (val) {
@@ -73,6 +98,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
+		overflow: hidden;
 		background-color: @color-background;
 		z-index: 100;
 		overflow: hidden;
@@ -150,11 +176,74 @@
 					display: flex;
 					flex-flow: row nowrap;
 					justify-content: center;
+					align-items:center;
+					padding: 20px;
 					.icon {
 						flex: 1 1 auto;
+						color: @color-theme;
+						font-size: 30px;
+						text-align: center;
+					}
+					.btn-play {
+						font-size: 40px;
 					}
 				}
 			}
+		}
+		
+	}
+	.mini-player {
+		position: fixed;
+		bottom: 0px;
+		width: 100%;
+		height: 60px;
+		z-index: 100;
+		background-color: @color-highlight-background;
+		display: flex;
+		flex-flow: row nowrap;
+		.mini-icon-wrapper {
+			flex: 60px 0 0 ;
+			padding-left: 10px;
+			display: flex;
+			align-items: center;
+			img {
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+			}
+			.play {
+				animation: rotate 20s linear infinite;
+			}
+			.pause {
+				animation-play-state: paused
+			}
+		}
+		.mini-text-wrapper {
+			flex: auto 1 1;
+			display: flex;
+			flex-flow: column nowrap;
+			justify-content: center;
+			.songname {
+				font-size: @font-size-medium;
+				color: @color-text;
+				margin-bottom: 5px;
+			}
+			.singername {
+				font-size: @font-size-small;
+				color: @color-text-d;
+			}
+		}
+		.mini-playCtl-wrapper {
+			line-height: 60px;
+			font-size: 30px;
+			color: @color-theme-d;
+			margin-right: 20px;
+		}
+		.mini-playlist-wrapper {
+			font-size: 30px;
+			line-height: 60px;
+			color: @color-theme-d;
+			margin-right: 10px;
 		}
 	}
 	@keyframes rotate {
