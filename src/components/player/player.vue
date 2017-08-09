@@ -39,8 +39,8 @@
 			</div>
 			<audio ref="audio" :src="currentSong.url" autoplay="true"></audio>
 		</div>
-		<div class="mini-player" v-show="playList.length > 0 && !fullScreen" @click.stop.prevent="miniplayerWrapperClick">
-			<div class="mini-icon-wrapper">
+		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
+			<div class="mini-icon-wrapper" @click.stop.prevent="miniplayerWrapperClick">
 				<img :src="currentSong.img" :class="playing ? 'play' : 'pause'">
 			</div>
 			<div class="mini-text-wrapper">
