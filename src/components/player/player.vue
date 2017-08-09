@@ -37,7 +37,7 @@
 					</div>
 				</div>
 			</div>
-			<audio :src="currentSong.url"></audio>
+			<audio ref="audio" :src="currentSong.url" autoplay="true"></audio>
 		</div>
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen" @click.stop.prevent="miniplayerWrapperClick">
 			<div class="mini-icon-wrapper">
@@ -81,6 +81,11 @@
 			},
 			playClick () {
 				this.setPlaying(!this.playing);
+				if (this.playing) {
+					this.$refs.audio.play();
+				} else {
+					this.$refs.audio.pause();
+				}
 			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
