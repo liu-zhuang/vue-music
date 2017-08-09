@@ -22,13 +22,13 @@
 						<div class="icon mode">
 							<i :class="iconMode"></i>
 						</div>
-						<div class="icon prev">
+						<div class="icon prev" @click="prevClick">
 							<i class="icon-prev"></i>
 						</div>
 						<div class="icon btn-play" @click="playClick">
 							<i :class="iconPlay"></i>
 						</div>
-						<div class="icon next">
+						<div class="icon next" @click="nextClick">
 							<i class="icon-next"></i>
 						</div>
 						<div class="icon favorite">
@@ -87,20 +87,28 @@
 					this.$refs.audio.pause();
 				}
 			},
+			prevClick () {
+				if (this.currentIndex > 0) {
+					this.setCurrentindex(this.currentIndex - 1);
+				} else {
+					this.setCurrentindex(this.playList.length - 1);
+				}
+			},
+			nextClick () {
+				if (this.currentIndex === this.playList.length - 1) {
+					this.setCurrentindex(0);
+				} else {
+					this.setCurrentindex(this.currentIndex + 1);
+				}
+			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
-				setPlaying: 'set_playing'
+				setPlaying: 'set_playing',
+				setCurrentindex: 'set_currentindex'
 			})
 		},
 		computed: {
-			// iconPlay () {
-			// 	if (this.palying) {
-			// 		return 'icon-pause';
-			// 	} else {
-			// 		return 'icon-play';
-			// 	}
-			// },
-			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList'])
+			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex'])
 		},
 		watch: {
 			currentSong (val) {
