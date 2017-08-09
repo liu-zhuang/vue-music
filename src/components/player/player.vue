@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="player" v-show="playing && fullScreen">
+		<div class="player" v-show="playList.length > 0 && fullScreen">
 			<div class="normal-player" v-show="fullScreen">
 				<div class="background" ref="divBg"></div>
 				<div class="top">
@@ -25,7 +25,7 @@
 						<div class="icon prev">
 							<i class="icon-prev"></i>
 						</div>
-						<div class="icon btn-play">
+						<div class="icon btn-play" @click="playClick">
 							<i :class="iconPlay"></i>
 						</div>
 						<div class="icon next">
@@ -39,7 +39,7 @@
 			</div>
 			<audio :src="currentSong.url"></audio>
 		</div>
-		<div class="mini-player" v-show="playing && !fullScreen">
+		<div class="mini-player" v-show="playList.length > 0 && !fullScreen" @click.stop.prevent="miniplayerWrapperClick">
 			<div class="mini-icon-wrapper">
 				<img :src="currentSong.img" :class="playing ? 'play' : 'pause'">
 			</div>
@@ -47,7 +47,7 @@
 				<p class="songname">{{currentSong.songname}}</p>
 				<p class="singername">{{currentSong.singer}}</p>
 			</div>
-			<div class="mini-playCtl-wrapper">
+			<div class="mini-playCtl-wrapper" @click.stop.prevent="playClick">
 				<i :class="iconPlay"></i>
 			</div>
 			<div class="mini-playlist-wrapper">
@@ -63,8 +63,8 @@
 		data () {
 			return {
 				iconMode: 'icon-loop',
-				iconPlay: 'icon-play',
-				iconFavorite: 'icon-not-favorite'
+				iconFavorite: 'icon-not-favorite',
+				iconPlay: 'icon-pause'
 			};
 		},
 		mounted () {
@@ -76,16 +76,37 @@
 				console.log('click');
 				this.setFullScreen(false);
 			},
+			miniplayerWrapperClick () {
+				this.setFullScreen(true);
+			},
+			playClick () {
+				this.setPlaying(!this.playing);
+			},
 			...mapMutations({
-				setFullScreen: 'set_fullscreen'
+				setFullScreen: 'set_fullscreen',
+				setPlaying: 'set_playing'
 			})
 		},
 		computed: {
-			...mapGetters(['playing', 'currentSong', 'fullScreen'])
+			// iconPlay () {
+			// 	if (this.palying) {
+			// 		return 'icon-pause';
+			// 	} else {
+			// 		return 'icon-play';
+			// 	}
+			// },
+			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList'])
 		},
 		watch: {
 			currentSong (val) {
 				this.$refs.divBg.style.backgroundImage = `url(${val.img})`;
+			},
+			playing (val) {
+				if (val) {
+					this.iconPlay = 'icon-pause';
+				} else {
+					this.iconPlay = 'icon-play';
+				}
 			}
 		}
 	};
