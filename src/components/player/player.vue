@@ -37,7 +37,7 @@
 					</div>
 				</div>
 			</div>
-			<audio ref="audio" :src="currentSong.url" autoplay="true"></audio>
+			<audio ref="audio" :src="currentSong.url"></audio>
 		</div>
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
 			<div class="mini-icon-wrapper" @click.stop.prevent="miniplayerWrapperClick">
@@ -93,12 +93,32 @@
 				} else {
 					this.setCurrentindex(this.playList.length - 1);
 				}
+				if (!this.playing) {
+					this.setPlaying(true);
+				} else {
+					setTimeout(() => {
+						console.log(this.$refs.audio.readyState);
+						if (this.$refs.audio.readyState === 4) {
+							this.$refs.audio.play();
+						}
+					}, 2000);
+				}
 			},
 			nextClick () {
 				if (this.currentIndex === this.playList.length - 1) {
 					this.setCurrentindex(0);
 				} else {
 					this.setCurrentindex(this.currentIndex + 1);
+				}
+				if (!this.playing) {
+					this.setPlaying(true);
+				} else {
+					setTimeout(() => {
+						console.log(this.$refs.audio.readyState);
+						if (this.$refs.audio.readyState === 4) {
+							this.$refs.audio.play();
+						}
+					}, 2000);
 				}
 			},
 			...mapMutations({
@@ -117,8 +137,15 @@
 			playing (val) {
 				if (val) {
 					this.iconPlay = 'icon-pause';
+					setTimeout(() => {
+						console.log(this.$refs.audio.readyState);
+						if (this.$refs.audio.readyState === 4) {
+							this.$refs.audio.play();
+						}
+					}, 2000);
 				} else {
 					this.iconPlay = 'icon-play';
+					this.$refs.audio.pause();
 				}
 			}
 		}
