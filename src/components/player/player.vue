@@ -7,8 +7,8 @@
 					<div class="icon-down">
 						<i class="icon-back" @click="iconBackClick"></i>
 					</div>
-					<div class="song-name">{{currentSong.songname}}</div>
-					<div class="singer-name">{{currentSong.singer}}</div>
+					<div class="song-name" v-html="currentSong.songname"></div>
+					<div class="singer-name" v-html="currentSong.singer"></div>
 				</div>
 				<div class="middle">
 					<div class="cd-wrapper" :class="playing ? 'play' : 'pause'">
@@ -44,8 +44,8 @@
 				<img :src="currentSong.img" :class="playing ? 'play' : 'pause'">
 			</div>
 			<div class="mini-text-wrapper">
-				<p class="songname">{{currentSong.songname}}</p>
-				<p class="singername">{{currentSong.singer}}</p>
+				<p class="songname" v-html="currentSong.songname"></p>
+				<p class="singername" v-html="currentSong.singer"></p>
 			</div>
 			<div class="mini-playCtl-wrapper" @click.stop.prevent="playClick">
 				<i :class="iconPlay"></i>
