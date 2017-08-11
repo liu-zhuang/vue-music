@@ -11,7 +11,7 @@
 					<div class="singer-name" v-html="currentSong.singer"></div>
 				</div>
 				<div class="middle">
-					<div class="cd-wrapper" :class="playing ? 'play' : 'pause'">
+					<div class="cd-wrapper" :class="playing ? 'play' : 'play pause'">
 						<img class="img-cd" :src="currentSong.img"></img>
 					</div>
 				</div>
@@ -41,7 +41,7 @@
 		</div>
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
 			<div class="mini-icon-wrapper" @click.stop.prevent="miniplayerWrapperClick">
-				<img :src="currentSong.img" :class="playing ? 'play' : 'pause'">
+				<img :src="currentSong.img" :class="playing ? 'play' : 'play pause'">
 			</div>
 			<div class="mini-text-wrapper">
 				<p class="songname" v-html="currentSong.songname"></p>
