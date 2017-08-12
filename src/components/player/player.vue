@@ -1,6 +1,8 @@
 <template>
 	<div>
 		<div class="player" v-show="playList.length > 0 && fullScreen">
+			<transition name="normal" @enter="onEnter" @after-enter="onAfterEnter"
+			@leave="onLeave" @after-leave="onAfterLeave">
 			<div class="normal-player" v-show="fullScreen">
 				<div class="background" ref="divBg"></div>
 				<div class="top">
@@ -10,7 +12,7 @@
 					<div class="song-name" v-html="currentSong.songname"></div>
 					<div class="singer-name" v-html="currentSong.singer"></div>
 				</div>
-				<div class="middle">
+				<div class="middle" ref="cdWrapper">
 					<div class="cd-wrapper" :class="playing ? 'play' : 'play pause'">
 						<img class="img-cd" :src="currentSong.img"></img>
 					</div>
@@ -37,10 +39,12 @@
 					</div>
 				</div>
 			</div>
-			<audio ref="audio" :src="currentSong.url"></audio>
-		</div>
+		</transition>
+		<audio ref="audio" :src="currentSong.url"></audio>
+	</div>
+	<transition name="mini">  
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
-			<div class="mini-icon-wrapper" @click.stop.prevent="miniplayerWrapperClick">
+			<div ref="miniCdWrapper" class="mini-icon-wrapper" @click.stop.prevent="miniplayerWrapperClick">
 				<img :src="currentSong.img" :class="playing ? 'play' : 'play pause'">
 			</div>
 			<div class="mini-text-wrapper">
@@ -54,11 +58,13 @@
 				<i class="icon-playlist"></i>
 			</div>
 		</div>
-	</div>
+	</transition>
+</div>
 </template>
 <script>
 	import {mapGetters, mapMutations} from 'vuex';
-
+	import animations from 'create-keyframe-animation';
+	// https://github.com/HenrikJoreteg/create-keyframe-animation
 	export default {
 		data () {
 			return {
@@ -121,6 +127,35 @@
 					}, 2000);
 				}
 			},
+			onEnter () {
+				// 动画的js钩子函数
+				let animation = {
+					0: {
+						transform: `translate3d(-255px,385px,0) scale(0.1)`
+					},
+					60: {
+						transform: `translate3d(0,0,0) scale(1.1)`
+					},
+					100: {
+						transform: `translate3d(0,0,0) scale(1)`
+					}
+				};
+				animations.registerAnimation({
+					name: 'cdmove',
+					animation,
+					presets: {
+						duration: 4000,
+						easing: 'linear',
+						delay: 400
+					}
+				});
+				animations.runAnimation(this.$refs.cdWrapper, 'cdmove', () => {
+					console.log('cd move');
+				});
+			},
+			onAfterEnter () {},
+			onLeave () {},
+			onAfterLeave () {},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
@@ -230,7 +265,7 @@
 			}
 			.bottom {
 				position: absolute;
-				bottom: 50px;
+				bottom: 30px;
 				width: 100%;
 				
 				.operator-wrapper {
@@ -307,10 +342,32 @@
 			margin-right: 10px;
 		}
 	}
+	.normal-enter-active, .normal-leave-active {
+		transition: all 0.4s;
+		.top, .bottom {
+			transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32)
+		}
+	}
+	.normal-enter, .normal-leave-to {
+		opacity: 0;
+		.top {
+			transform: translate3d(0, -100px, 0);
+		}
+		.bottom {
+			transform: translate3d(0, 100px, 0);
+		}
+	}
+
+	.mini-enter-active, .mini-leave-active {
+		transition: all 0.4s;
+	}
+	.mini-enter, .mini-leave-to {
+		opacity: 0;
+	}
 	@keyframes rotate {
 		.rotate-frames;
 	}
-	.rotate-frames (){
+	.rotate-frames () {
 		from {transform: rotate(0);}
 		to {transform: rotate(360deg);}
 	}
