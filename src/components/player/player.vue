@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<div class="player" v-show="playList.length > 0 && fullScreen">
+		<div ref="player" class="player" v-show="playList.length > 0 && fullScreen">
 			<transition name="normal" @enter="onEnter" @after-enter="onAfterEnter"
-			@leave="onLeave" @after-leave="onAfterLeave">
+			@before-leave="onLeave" @after-leave="onAfterLeave">
 			<div class="normal-player" v-show="fullScreen">
 				<div class="background" ref="divBg"></div>
 				<div class="top">
@@ -65,6 +65,8 @@
 	import {mapGetters, mapMutations} from 'vuex';
 	import animations from 'create-keyframe-animation';
 	// https://github.com/HenrikJoreteg/create-keyframe-animation
+	import {prefixStyle} from 'common/js/dom';
+	let transform = prefixStyle('transform');
 	export default {
 		data () {
 			return {
@@ -79,8 +81,12 @@
 		},
 		methods: {
 			iconBackClick () {
-				console.log('click');
-				this.setFullScreen(false);
+				this.$refs.cdWrapper.style.transition = 'all 1s';
+				const {x, y, scale} = this._calcPosition();
+				this.$refs.cdWrapper.style[transform] = `translate3d(-${x}px,${y}px,0) scale(${scale})`;
+				setTimeout(() => {
+					this.setFullScreen(false);
+				}, 1000);
 			},
 			miniplayerWrapperClick () {
 				this.setFullScreen(true);
@@ -127,11 +133,13 @@
 					}, 2000);
 				}
 			},
-			onEnter () {
+			onEnter (el, done) {
+				// 计算cd wrapper 的初始位置，缩放比例
+				let {x, y, scale} = this._calcPosition();
 				// 动画的js钩子函数
 				let animation = {
 					0: {
-						transform: `translate3d(-255px,385px,0) scale(0.1)`
+						transform: `translate3d(-${x}px,${y}px,0) scale(${scale})`
 					},
 					60: {
 						transform: `translate3d(0,0,0) scale(1.1)`
@@ -144,23 +152,44 @@
 					name: 'cdmove',
 					animation,
 					presets: {
-						duration: 4000,
+						duration: 2000,
 						easing: 'linear',
-						delay: 400
+						delay: 100
 					}
 				});
 				animations.runAnimation(this.$refs.cdWrapper, 'cdmove', () => {
-					console.log('cd move');
+					done();
 				});
 			},
-			onAfterEnter () {},
-			onLeave () {},
-			onAfterLeave () {},
+			onAfterEnter () {
+				// 进入完成后移除该动画
+				animations.unregisterAnimation('cdmove');
+				this.$refs.cdWrapper.style.animation = '';
+			},
+			onLeave (el, done) {
+			},
+			onAfterLeave () {
+				this.$refs.cdWrapper.style.transition = '';
+				this.$refs.cdWrapper.style[transform] = '';
+			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
 				setCurrentindex: 'set_currentindex'
-			})
+			}),
+			_calcPosition () {
+				let miniCdWrapperPaddingLeft = 10; // mini播放器中cdwrapper的padding-left
+				let miniCdWrapperWidth = 50; // cd wrapper 的宽度
+				let screenWidth = window.innerWidth; // 屏幕的宽度
+				let x = (screenWidth / 2) - miniCdWrapperPaddingLeft - (miniCdWrapperWidth / 2);
+				let miniCdWrapperHeight = 60; // cd wrapper 的高度
+				let screenHeight = window.innerHeight; // 屏幕的高度
+				let topHeight = 80;
+				let y = screenHeight - (miniCdWrapperHeight / 2) - topHeight - (screenWidth / 2);
+				let scale = miniCdWrapperWidth / (screenWidth * 0.8);
+				console.log(x, y, scale);
+				return {x, y, scale};
+			}
 		},
 		computed: {
 			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex'])
@@ -168,6 +197,9 @@
 		watch: {
 			currentSong (val) {
 				this.$refs.divBg.style.backgroundImage = `url(${val.img})`;
+				this.$nextTick(() => {
+					this.$refs.audio.play();
+				});
 			},
 			playing (val) {
 				if (val) {
@@ -267,7 +299,7 @@
 				position: absolute;
 				bottom: 30px;
 				width: 100%;
-				
+
 				.operator-wrapper {
 					display: flex;
 					flex-flow: row nowrap;
@@ -286,7 +318,7 @@
 				}
 			}
 		}
-		
+
 	}
 	.mini-player {
 		position: fixed;
