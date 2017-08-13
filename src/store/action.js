@@ -16,3 +16,14 @@ export const randomPlay = function ({commit}, {playList}) {
 	// 歌曲列表设置为传入的歌曲列表
 	commit(mutationTypes.SET_PLAYLIST, playList);
 };
+
+export const play = function ({commit}, {index, playList}) {
+	// 播放状态设为true
+	commit(mutationTypes.SET_PLAYING, true);
+	// 是否全屏设为true
+	commit(mutationTypes.SET_FULLSCREEN, true);
+	// 歌曲索引设为1
+	commit(mutationTypes.SET_CURRENTINDEX, index);
+	// 歌曲列表设置为传入的歌曲列表
+	commit(mutationTypes.SET_PLAYLIST, playList);
+};

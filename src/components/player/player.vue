@@ -187,7 +187,6 @@
 				let topHeight = 80;
 				let y = screenHeight - (miniCdWrapperHeight / 2) - topHeight - (screenWidth / 2);
 				let scale = miniCdWrapperWidth / (screenWidth * 0.8);
-				console.log(x, y, scale);
 				return {x, y, scale};
 			}
 		},

@@ -24,7 +24,7 @@
 		:probe-type="3"
 		@scroll="onScroll">
 		<div>
-			<song-list v-if="songList.length > 0" :songList="songList"></song-list>
+			<song-list v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
 		</div>
 	</scroll>
 </div>
@@ -94,11 +94,18 @@
 					playList: this.songList
 				});
 			},
+			onSongClick (index, playList) {
+				this.play({
+					index,
+					playList
+				});
+			},
 			...mapMutations({
 				set_playing: 'set_playing'
 			}),
 			...mapActions({
-				randomPlay: 'randomPlay'
+				randomPlay: 'randomPlay',
+				play: 'play'
 			})
 		},
 		computed: {
