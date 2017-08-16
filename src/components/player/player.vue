@@ -19,7 +19,16 @@
 				</div>
 				<div class="bottom">
 					<div class="dot-wrapper"></div>
-					<div class="progress-wrapper"></div>
+					<div class="progress-wrapper">
+						<div class="timer-left">
+							{{currentSongTime}}
+						</div>
+						<progress-bar :percent="percent">
+						</progress-bar>
+						<div class="timer-right">
+							{{currentSongDuration}}
+						</div>
+					</div>
 					<div class="operator-wrapper">
 						<div class="icon mode">
 							<i :class="iconMode"></i>
@@ -40,7 +49,7 @@
 				</div>
 			</div>
 		</transition>
-		<audio ref="audio" :src="currentSong.url"></audio>
+		<audio ref="audio" :src="currentSong.url" @timeupdate="timeUpdate"></audio>
 	</div>
 	<transition name="mini">  
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
@@ -66,14 +75,20 @@
 	import animations from 'create-keyframe-animation';
 	// https://github.com/HenrikJoreteg/create-keyframe-animation
 	import {prefixStyle} from 'common/js/dom';
+	import progressBar from 'com/progressBar/progressBar';
 	let transform = prefixStyle('transform');
 	export default {
 		data () {
 			return {
 				iconMode: 'icon-loop',
 				iconFavorite: 'icon-not-favorite',
-				iconPlay: 'icon-pause'
+				iconPlay: 'icon-pause',
+				currentTime: 0,
+				percent: 0
 			};
+		},
+		components: {
+			progressBar
 		},
 		mounted () {
 			this.$nextTick(() => {
@@ -172,6 +187,10 @@
 				this.$refs.cdWrapper.style.transition = '';
 				this.$refs.cdWrapper.style[transform] = '';
 			},
+			timeUpdate (e) {
+				this.currentTime = e.target.currentTime;
+				this.percent = this.currentTime / this.currentSong.duration;
+			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
@@ -188,9 +207,20 @@
 				let y = screenHeight - (miniCdWrapperHeight / 2) - topHeight - (screenWidth / 2);
 				let scale = miniCdWrapperWidth / (screenWidth * 0.8);
 				return {x, y, scale};
+			},
+			_calc (val) {
+				var min = Math.floor(val / 60).toString().padStart(2, 0);
+				var second = Math.ceil(val % 60).toString().padStart(2, 0);
+				return `${min}:${second}`;
 			}
 		},
 		computed: {
+			currentSongDuration () {
+				return this._calc(this.currentSong.duration);
+			},
+			currentSongTime () {
+				return this._calc(this.currentTime);
+			},
 			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex'])
 		},
 		watch: {
@@ -298,7 +328,30 @@
 				position: absolute;
 				bottom: 30px;
 				width: 100%;
+				.progress-wrapper {
+					width: 100%;
+					height: 30px;
+					box-sizing: border-box;
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: center;
+					align-items: center;
+					padding: 0 20px 0 20px;
+					.timer-left {
+						flex: 0 0 20px;
+						color: @color-text;
+						font-size: @font-size-small;
+					}
+					.timer-right {
+						flex: 0 0 20px;
+						color: @color-text;						
+						font-size: @font-size-small;
+					}
+					.progressBar-wrapper {
+						flex: 1 1 auto;
 
+					}
+				}
 				.operator-wrapper {
 					display: flex;
 					flex-flow: row nowrap;
