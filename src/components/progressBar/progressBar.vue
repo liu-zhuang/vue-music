@@ -1,8 +1,8 @@
 <template>
 	<div class="progressBar-wrapper">
 		<div ref="bar" class="bar-inner">
-			<div ref="progress" class="progress"></div>
-			<div class="progress-btn-wrapper">
+			<div ref="progress" class="progress" @touchstart.prevent="onTouchStart" @touchmove.prevent @touchend="onTouchEnd"></div>
+			<div ref="progressBtn" class="progress-btn-wrapper">
 				<div class="progress-btn"></div>
 			</div>
 		</div>
@@ -19,10 +19,30 @@
 				default: 0
 			}
 		},
+		methods: {
+			onTouchStart (e) {
+				console.log('start');
+				console.log(e);
+				alert('start');
+			},
+			onTouchMove (e) {
+				console.log('move');
+				console.log(e);
+				alert('m');
+			},
+			onTouchEnd (e) {
+				console.log('end');
+				console.log(e);
+				alert('e');
+			}
+		},
 		watch: {
 			percent (val) {
 				const bar = this.$refs.bar;
 				this.$refs.progress.style.width = `${bar.clientWidth * val}px`;
+				if (bar.clientWidth * val > 8) {
+					this.$refs.progressBtn.style.transform = `translateX(${bar.clientWidth * val - 8}px)`;
+				}
 			}
 		}
 	};
@@ -42,6 +62,23 @@
 				background: @color-theme;
 				width: 0px;
 				height: 100%;
+			}
+			.progress-btn-wrapper {
+				position: absolute;
+				box-sizing: border-box;
+				width: 30px;
+				height: 30px;
+				top: -15px;
+				border:solid 1px red;
+				.progress-btn {
+					position: relative;
+					top: 7px;
+					width: 16px;
+					height: 16px;
+					background-color: @color-theme;
+					border-radius: 50%;
+					border: solid 3px @color-text;
+				}
 			}
 		}
 	}

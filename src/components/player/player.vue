@@ -49,7 +49,7 @@
 				</div>
 			</div>
 		</transition>
-		<audio ref="audio" :src="currentSong.url" @timeupdate="timeUpdate"></audio>
+		<audio ref="audio" @play="onAudioReady"  @error="onAudioError" :src="currentSong.url" @timeupdate="timeUpdate"></audio>
 	</div>
 	<transition name="mini">  
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
@@ -84,7 +84,8 @@
 				iconFavorite: 'icon-not-favorite',
 				iconPlay: 'icon-pause',
 				currentTime: 0,
-				percent: 0
+				percent: 0,
+				audioReady: false
 			};
 		},
 		components: {
@@ -191,6 +192,12 @@
 				this.currentTime = e.target.currentTime;
 				this.percent = this.currentTime / this.currentSong.duration;
 			},
+			onAudioReady (e) {
+				this.audioReady = true;
+			},
+			onAudioError (e) {
+				this.audioReady = true;
+			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
@@ -210,7 +217,7 @@
 			},
 			_calc (val) {
 				var min = Math.floor(val / 60).toString().padStart(2, 0);
-				var second = Math.ceil(val % 60).toString().padStart(2, 0);
+				var second = Math.floor(val % 60).toString().padStart(2, 0);
 				return `${min}:${second}`;
 			}
 		},
@@ -227,7 +234,9 @@
 			currentSong (val) {
 				this.$refs.divBg.style.backgroundImage = `url(${val.img})`;
 				this.$nextTick(() => {
-					this.$refs.audio.play();
+					if (this.audioReady) {
+						this.$refs.audio.play();
+					}
 				});
 			},
 			playing (val) {
@@ -338,18 +347,18 @@
 					align-items: center;
 					padding: 0 20px 0 20px;
 					.timer-left {
-						flex: 0 0 20px;
+						flex: 0 0 35px;
 						color: @color-text;
 						font-size: @font-size-small;
 					}
 					.timer-right {
-						flex: 0 0 20px;
+						flex: 0 0 35px;
 						color: @color-text;						
 						font-size: @font-size-small;
+						padding-left: 5px;
 					}
 					.progressBar-wrapper {
 						flex: 1 1 auto;
-
 					}
 				}
 				.operator-wrapper {
