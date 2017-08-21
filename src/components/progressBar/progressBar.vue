@@ -1,8 +1,8 @@
 <template>
 	<div class="progressBar-wrapper">
 		<div ref="bar" class="bar-inner">
-			<div ref="progress" class="progress" @touchstart.prevent="onTouchStart" @touchmove.prevent @touchend="onTouchEnd"></div>
-			<div ref="progressBtn" class="progress-btn-wrapper">
+			<div ref="progress" class="progress"></div>
+			<div ref="progressBtn" @touchstart.stop="moveStart"  @touchmove.stop="move"  @touchend="moveEnd" class="progress-btn-wrapper">
 				<div class="progress-btn"></div>
 			</div>
 		</div>
@@ -20,20 +20,17 @@
 			}
 		},
 		methods: {
-			onTouchStart (e) {
+			move (e) {
+				console.log(e);
+				console.log(1);
+			},
+			moveStart (e) {
 				console.log('start');
 				console.log(e);
-				alert('start');
 			},
-			onTouchMove (e) {
-				console.log('move');
-				console.log(e);
-				alert('m');
-			},
-			onTouchEnd (e) {
+			moveEnd (e) {
 				console.log('end');
 				console.log(e);
-				alert('e');
 			}
 		},
 		watch: {
