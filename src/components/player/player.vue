@@ -23,7 +23,7 @@
 						<div class="timer-left">
 							{{currentSongTime}}
 						</div>
-						<progress-bar :percent="percent">
+						<progress-bar :percent="percent" @percentChange="percentChange">
 						</progress-bar>
 						<div class="timer-right">
 							{{currentSongDuration}}
@@ -197,6 +197,17 @@
 			},
 			onAudioError (e) {
 				this.audioReady = true;
+			},
+			percentChange (percent) {
+				const currentTime = this.currentSong.duration * percent;
+				this.$refs.audio.currentTime = currentTime;
+				if (!this.palying) {
+					this.setPlaying(true);
+					if (!this.audioReady) {
+						return;
+					}
+					this.$refs.audio.play();
+				}
 			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',

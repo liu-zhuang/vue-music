@@ -1,5 +1,5 @@
 <template>
-	<div class="progressBar-wrapper">
+	<div class="progressBar-wrapper" ref="progressBarWrapper" @click="click">
 		<div ref="bar" class="bar-inner">
 			<div ref="progress" class="progress"></div>
 			<div ref="progressBtn" @touchstart.stop="moveStart"  @touchmove.stop="move"  @touchend="moveEnd" class="progress-btn-wrapper">
@@ -9,6 +9,8 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import {prefixStyle} from 'common/js/dom';
+	const prefixTransform = prefixStyle('transform');
 	export default {
 		data () {
 			return {};
@@ -19,26 +21,59 @@
 				default: 0
 			}
 		},
+		created () {
+			this.touch = {};
+		},
 		methods: {
 			move (e) {
-				console.log(e);
-				console.log(1);
+				if (!this.touch.init) {
+					return;
+				}
+				// 移动的距离 可正可负
+				let offset = e.touches[0].pageX - this.touch.start;
+				// 保证不会移动到进度条的左侧外侧
+				const maxWidth = this.$refs.progressBarWrapper.clientWidth;
+				const newOffset = Math.min(this.touch.left + offset, maxWidth);
+				this._offset(newOffset);
 			},
 			moveStart (e) {
-				console.log('start');
-				console.log(e);
+				// 标记当前开始touch
+				this.touch.init = true;
+				// 记录开始的位移
+				this.touch.start = e.touches[0].pageX;
+				// 记录初始的位置
+				this.touch.left = this.$refs.progress.clientWidth;
 			},
 			moveEnd (e) {
-				console.log('end');
-				console.log(e);
+				this.touch.init = false;
+				// touch end 的时候，计算目前播放的百分比，并通知出去
+				// 这里忽略了进度按钮的宽度，懒的去算了
+				this._triggerChange();
+			},
+			click (e) {
+				// 该元素与页面的距离
+				const rect = this.$refs.progressBarWrapper.getBoundingClientRect();
+				const offsetWidth = e.pageX - rect.left;
+				this._offset(offsetWidth);
+				this._triggerChange();
+			},
+			_offset (offset) {
+				this.$refs.progress.style.width = `${offset}px`;
+				if (offset > 8) {
+					this.$refs.progressBtn.style[prefixTransform] = `translateX(${offset - 8}px)`;
+				}
+			},
+			_triggerChange () {
+				let percent = this.$refs.progress.clientWidth / this.$refs.progressBarWrapper.clientWidth;
+				this.$emit('percentChange', percent);
 			}
 		},
 		watch: {
 			percent (val) {
-				const bar = this.$refs.bar;
-				this.$refs.progress.style.width = `${bar.clientWidth * val}px`;
-				if (bar.clientWidth * val > 8) {
-					this.$refs.progressBtn.style.transform = `translateX(${bar.clientWidth * val - 8}px)`;
+				if (val > 0 && !this.touch.init) {
+					const bar = this.$refs.bar;
+					const offset = bar.clientWidth * val;
+					this._offset(offset);
 				}
 			}
 		}
@@ -66,7 +101,6 @@
 				width: 30px;
 				height: 30px;
 				top: -15px;
-				border:solid 1px red;
 				.progress-btn {
 					position: relative;
 					top: 7px;
