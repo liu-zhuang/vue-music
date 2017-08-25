@@ -125,7 +125,6 @@
 					this.setPlaying(true);
 				} else {
 					setTimeout(() => {
-						console.log(this.$refs.audio.readyState);
 						if (this.$refs.audio.readyState === 4) {
 							this.$refs.audio.play();
 						}
@@ -142,7 +141,6 @@
 					this.setPlaying(true);
 				} else {
 					setTimeout(() => {
-						console.log(this.$refs.audio.readyState);
 						if (this.$refs.audio.readyState === 4) {
 							this.$refs.audio.play();
 						}
@@ -254,7 +252,6 @@
 				if (val) {
 					this.iconPlay = 'icon-pause';
 					setTimeout(() => {
-						console.log(this.$refs.audio.readyState);
 						if (this.$refs.audio.readyState === 4) {
 							this.$refs.audio.play();
 						}
