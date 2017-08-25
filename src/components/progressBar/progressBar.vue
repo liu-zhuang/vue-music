@@ -59,8 +59,12 @@
 			},
 			_offset (offset) {
 				this.$refs.progress.style.width = `${offset}px`;
-				if (offset > 8) {
-					this.$refs.progressBtn.style[prefixTransform] = `translateX(${offset - 8}px)`;
+				if (!this.$refs.progressBtn.style[prefixTransform]) {
+					if (offset > 8) {
+						this.$refs.progressBtn.style[prefixTransform] = `translateX(${offset - 8}px)`;
+					}
+				} else {
+					this.$refs.progressBtn.style[prefixTransform] = `translateX(${offset - 8 < 0 ? 0 : offset - 8}px)`;
 				}
 			},
 			_triggerChange () {
