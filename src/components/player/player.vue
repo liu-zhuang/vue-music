@@ -30,7 +30,7 @@
 						</div>
 					</div>
 					<div class="operator-wrapper">
-						<div class="icon mode">
+						<div class="icon mode" @click="switchPlaymode">
 							<i :class="iconMode"></i>
 						</div>
 						<div class="icon prev" @click="prevClick">
@@ -49,7 +49,7 @@
 				</div>
 			</div>
 		</transition>
-		<audio ref="audio" @play="onAudioReady"  @error="onAudioError" :src="currentSong.url" @timeupdate="timeUpdate"></audio>
+		<audio ref="audio" @play="onAudioReady"  @error="onAudioError" :src="currentSong.url" @timeupdate="timeUpdate" @ended="onEnd"></audio>
 	</div>
 	<transition name="mini">  
 		<div class="mini-player" v-show="playList.length > 0 && !fullScreen">
@@ -75,12 +75,12 @@
 	import animations from 'create-keyframe-animation';
 	// https://github.com/HenrikJoreteg/create-keyframe-animation
 	import {prefixStyle} from 'common/js/dom';
+	import {playMode} from 'common/js/config';
 	import progressBar from 'com/progressBar/progressBar';
 	let transform = prefixStyle('transform');
 	export default {
 		data () {
 			return {
-				iconMode: 'icon-loop',
 				iconFavorite: 'icon-not-favorite',
 				iconPlay: 'icon-pause',
 				currentTime: 0,
@@ -196,6 +196,16 @@
 			onAudioError (e) {
 				this.audioReady = true;
 			},
+			onEnd (e) {
+				console.log('end');
+				if (this.playMode === playMode.loop) {
+					console.log('loop');
+					this.$refs.audio.currentTime = 0;
+					this.$refs.audio.play();
+				} else {
+					this.nextClick();
+				}
+			},
 			percentChange (percent) {
 				const currentTime = this.currentSong.duration * percent;
 				this.$refs.audio.currentTime = currentTime;
@@ -207,10 +217,14 @@
 					this.$refs.audio.play();
 				}
 			},
+			switchPlaymode () {
+				this.setPlayMode((this.playMode + 1) % 3);
+			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
-				setCurrentindex: 'set_currentindex'
+				setCurrentindex: 'set_currentindex',
+				setPlayMode: 'set_playmode'
 			}),
 			_calcPosition () {
 				let miniCdWrapperPaddingLeft = 10; // mini播放器中cdwrapper的padding-left
@@ -237,7 +251,10 @@
 			currentSongTime () {
 				return this._calc(this.currentTime);
 			},
-			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex'])
+			iconMode () {
+				return this.playMode === 0 ? 'icon-sequence' : this.playMode === 1 ? 'icon-loop' : 'icon-random';
+			},
+			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex', 'playMode'])
 		},
 		watch: {
 			currentSong (val) {
