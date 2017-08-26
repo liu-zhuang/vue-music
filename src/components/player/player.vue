@@ -76,6 +76,7 @@
 	// https://github.com/HenrikJoreteg/create-keyframe-animation
 	import {prefixStyle} from 'common/js/dom';
 	import {playMode} from 'common/js/config';
+	import {shuffle} from 'common/js/utility';
 	import progressBar from 'com/progressBar/progressBar';
 	let transform = prefixStyle('transform');
 	export default {
@@ -219,12 +220,25 @@
 			},
 			switchPlaymode () {
 				this.setPlayMode((this.playMode + 1) % 3);
+				let current = this.currentSong;
+				if (this.playMode === playMode.random) {
+					// 随机时，打乱playlist
+					this.setPlayList(shuffle(this.playList));
+				} else {
+					// 非随机时，playlist = sequenceList
+					this.setPlayList(this.sequencePlayList);
+				}
+				let newIndex = this.playList.findIndex(item => {
+					return item.songid === current.songid;
+				});
+				this.setCurrentindex(newIndex);
 			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
 				setPlaying: 'set_playing',
 				setCurrentindex: 'set_currentindex',
-				setPlayMode: 'set_playmode'
+				setPlayMode: 'set_playmode',
+				setPlayList: 'set_playlist'
 			}),
 			_calcPosition () {
 				let miniCdWrapperPaddingLeft = 10; // mini播放器中cdwrapper的padding-left
@@ -254,10 +268,14 @@
 			iconMode () {
 				return this.playMode === 0 ? 'icon-sequence' : this.playMode === 1 ? 'icon-loop' : 'icon-random';
 			},
-			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex', 'playMode'])
+			...mapGetters(['playing', 'currentSong', 'fullScreen', 'playList', 'currentIndex', 'playMode', 'sequencePlayList'])
 		},
 		watch: {
-			currentSong (val) {
+			currentSong (val, old) {
+				if (old.songid === val.songid) {
+					return;
+				}
+				console.log(val.songid, old.songid);
 				this.$refs.divBg.style.backgroundImage = `url(${val.img})`;
 				this.$nextTick(() => {
 					if (this.audioReady) {
