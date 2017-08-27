@@ -12,10 +12,26 @@
 					<div class="song-name" v-html="currentSong.songname"></div>
 					<div class="singer-name" v-html="currentSong.singer"></div>
 				</div>
-				<div class="middle" ref="cdWrapper">
-					<div class="cd-wrapper" :class="playing ? 'play' : 'play pause'">
-						<img class="img-cd" :src="currentSong.img"></img>
+				<div class="middleContent">
+					<div class="middle-l">
+						<div class="middle" ref="cdWrapper">
+							<div class="cd-wrapper" :class="playing ? 'play' : 'play pause'">
+								<img class="img-cd" :src="currentSong.img"></img>
+							</div>
+						</div>
+						<div class="playing-lyric-wrapper">
+							<div class="playing-lyric"></div>
+						</div>
 					</div>
+					<scroll ref="lyricScroll" class="middle-r" v-if="currentLyric && currentLyric.lines" :data="currentLyric.lines">
+						<div class="lyric-wrapper">
+							<div v-if="currentLyric">
+								<p ref="lyricLines" class="text" :class="currentLineNum === index ? 'current' : ''" v-for="(lyric, index) in currentLyric.lines">
+									{{lyric.txt}}
+								</p>
+							</div>
+						</div>
+					</scroll>
 				</div>
 				<div class="bottom">
 					<div class="dot-wrapper"></div>
@@ -73,10 +89,12 @@
 <script>
 	import {mapGetters, mapMutations} from 'vuex';
 	import animations from 'create-keyframe-animation';
+	import Scroll from 'base/scroll/scroll';
 	// https://github.com/HenrikJoreteg/create-keyframe-animation
 	import {prefixStyle} from 'common/js/dom';
 	import {playMode} from 'common/js/config';
 	import {shuffle} from 'common/js/utility';
+	import LyricParser from 'lyric-parser';
 	import progressBar from 'com/progressBar/progressBar';
 	let transform = prefixStyle('transform');
 	export default {
@@ -86,11 +104,14 @@
 				iconPlay: 'icon-pause',
 				currentTime: 0,
 				percent: 0,
-				audioReady: false
+				audioReady: false,
+				currentLyric: '',
+				currentLineNum: 0
 			};
 		},
 		components: {
-			progressBar
+			progressBar,
+			Scroll
 		},
 		mounted () {
 			this.$nextTick(() => {
@@ -275,10 +296,25 @@
 				if (old.songid === val.songid) {
 					return;
 				}
-				console.log(val.songid, old.songid);
+				val.getLyric()
+				.then(res => {
+					this.currentLyric = new LyricParser(res, ({lineNum, txt}) => {
+						console.log(lineNum, txt);
+						this.currentLineNum = lineNum;
+						if (lineNum > 5) {
+							const lineEl = this.$refs.lyricLines[lineNum - 5];
+							this.$refs.lyricScroll.scrollToElement(lineEl, 1000);
+						} else {
+							this.$refs.lyricScroll.scrollTo(0, 0, 1000);
+						}
+					});
+					if (this.playing) {
+						this.currentLyric.play();
+					}
+				});
 				this.$refs.divBg.style.backgroundImage = `url(${val.img})`;
 				this.$nextTick(() => {
-					if (this.audioReady) {
+					if (this.audioReady && this.playing) {
 						this.$refs.audio.play();
 					}
 				});
@@ -290,7 +326,7 @@
 						if (this.$refs.audio.readyState === 4) {
 							this.$refs.audio.play();
 						}
-					}, 2000);
+					}, 1000);
 				} else {
 					this.iconPlay = 'icon-play';
 					this.$refs.audio.pause();
@@ -325,6 +361,7 @@
 				background-size: cover;
 				background-position: center;
 				filter:blur(10px);
+				opacity: 0.6;
 				z-index: -1;
 			}
 			.top {
@@ -350,32 +387,57 @@
 					line-height: 20px;
 				}
 			}
-			.middle {
-				position: absolute;
+			.middleContent {
+				position: fixed;
 				top: 80px;
 				bottom: 170px;
-				left: 10%;
-				width: 80%;
+				width: 100%;
 				box-sizing: border-box;
-				.cd-wrapper {
-					width: 100%;
-					text-align: center;
-					display: block;
-					.img-cd {
-						width: 100%;
-						height: 100%;
-						box-sizing: border-box;
-						border: 10px solid rgba(255, 255, 255, 0.1);
-						border-radius: 50%;
-					}
-					&.play {
-						animation: rotate 20s linear infinite;
-					}
-					&.pause {
-						animation-play-state: paused
+				display: flex;
+				flex-flow: row nowrap;
+				.middle-l {
+					height: 100%;
+					flex: 0 0 100%;
+					.middle {
+						.cd-wrapper {
+							width: 80%;
+							text-align: center;
+							display: block;
+							position: relative;
+							left: 10%;
+							.img-cd {
+								width: 100%;
+								height: 100%;
+								box-sizing: border-box;
+								border: 10px solid rgba(255, 255, 255, 0.1);
+								border-radius: 50%;
+							}
+							&.play {
+								animation: rotate 20s linear infinite;
+							}
+							&.pause {
+								animation-play-state: paused
+							}
+						}
 					}
 				}
+				.middle-r {
+					height: 100%;
+					flex: 0 0 100%;
+					width: 80%;
+					overflow: hidden;
+					text-align: center;
+					.text {
+						line-height: 32px;
+						color: @color-text-l;
+						font-size: @font-size-medium;
+					}
+					& .current {
+						color: @color-text;
+					}					
+				}
 			}
+
 			.bottom {
 				position: absolute;
 				bottom: 30px;
