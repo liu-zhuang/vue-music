@@ -12,7 +12,7 @@
 					<div class="song-name" v-html="currentSong.songname"></div>
 					<div class="singer-name" v-html="currentSong.singer"></div>
 				</div>
-				<div class="middleContent">
+				<div class="middleContent" ref="middleContent" @touchstart="onScrollTouchstart" @touchmove="onScrollTouchmove" @touchend="onScrollTouchend">
 					<div class="middle-l">
 						<div class="middle" ref="cdWrapper">
 							<div class="cd-wrapper" :class="playing ? 'play' : 'play pause'">
@@ -20,10 +20,12 @@
 							</div>
 						</div>
 						<div class="playing-lyric-wrapper">
-							<div class="playing-lyric"></div>
+							<!-- <div class="playing-lyric"> -->
+							<p class="playing-lyric">{{playingLyric}}</p>
+							<!-- </div> -->
 						</div>
 					</div>
-					<scroll ref="lyricScroll" class="middle-r" v-if="currentLyric && currentLyric.lines" :data="currentLyric.lines">
+					<scroll ref="lyricScroll" class="middle-r" v-if="currentLyric && currentLyric.lines" :data="currentLyric.lines" >
 						<div class="lyric-wrapper">
 							<div v-if="currentLyric">
 								<p ref="lyricLines" class="text" :class="currentLineNum === index ? 'current' : ''" v-for="(lyric, index) in currentLyric.lines">
@@ -34,7 +36,10 @@
 					</scroll>
 				</div>
 				<div class="bottom">
-					<div class="dot-wrapper"></div>
+					<div class="dot-wrapper">
+						<span class="dot" :class="{'active': currentShow === 'cd'}"></span>
+						<span class="dot" :class="{'active': currentShow === 'lyric'}"></span>
+					</div>
 					<div class="progress-wrapper">
 						<div class="timer-left">
 							{{currentSongTime}}
@@ -97,6 +102,7 @@
 	import LyricParser from 'lyric-parser';
 	import progressBar from 'com/progressBar/progressBar';
 	let transform = prefixStyle('transform');
+	let transitionDuration = prefixStyle('transitionDuration');
 	export default {
 		data () {
 			return {
@@ -106,12 +112,17 @@
 				percent: 0,
 				audioReady: false,
 				currentLyric: '',
-				currentLineNum: 0
+				currentLineNum: 0,
+				currentShow: 'cd',
+				playingLyric: ''
 			};
 		},
 		components: {
 			progressBar,
 			Scroll
+		},
+		created () {
+			this.touch = {};
 		},
 		mounted () {
 			this.$nextTick(() => {
@@ -135,6 +146,9 @@
 					this.$refs.audio.play();
 				} else {
 					this.$refs.audio.pause();
+				}
+				if (this.currentLyric) {
+					this.currentLyric.togglePlay();
 				}
 			},
 			prevClick () {
@@ -221,9 +235,11 @@
 			onEnd (e) {
 				console.log('end');
 				if (this.playMode === playMode.loop) {
-					console.log('loop');
 					this.$refs.audio.currentTime = 0;
 					this.$refs.audio.play();
+					if (this.currentLyric) {
+						this.currentLyric.seek(0);
+					}
 				} else {
 					this.nextClick();
 				}
@@ -231,6 +247,9 @@
 			percentChange (percent) {
 				const currentTime = this.currentSong.duration * percent;
 				this.$refs.audio.currentTime = currentTime;
+				if (this.currentLyric) {
+					this.currentLyric.seek(currentTime * 1000);
+				}
 				if (!this.palying) {
 					this.setPlaying(true);
 					if (!this.audioReady) {
@@ -253,6 +272,45 @@
 					return item.songid === current.songid;
 				});
 				this.setCurrentindex(newIndex);
+			},
+			onScrollTouchstart (e) {
+				this.touch.init = true;
+				this.touch.left = e.touches[0].pageX;
+			},
+			onScrollTouchmove (e) {
+				if (!this.touch.init) {
+					return;
+				}
+				const clientWidth = window.innerWidth;
+				const left = this.currentShow === 'cd' ? 0 : -window.innerWidth;
+				const touch = e.touches[0];
+				let deltaX = touch.pageX - this.touch.left;
+				const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX));
+				this.$refs.middleContent.style[transform] = `translate(${offsetWidth}px)`;
+				this.$refs.middleContent.style[transitionDuration] = '300ms';
+				this.touch.percent = Math.abs(offsetWidth) / clientWidth;
+			},
+			onScrollTouchend (e) {
+				let offsetWidth = 0;
+				if (this.currentShow === 'cd') {
+					if (this.touch.percent > 0.2) {
+						this.currentShow = 'lyric';
+						offsetWidth = -window.innerWidth;
+					} else {
+						offsetWidth = 0;
+					}
+				} else {
+					console.log(this.touch.percent);
+					if (this.touch.percent < 0.8) {
+						this.currentShow = 'cd';
+						offsetWidth = 0;
+					} else {
+						offsetWidth = -window.innerWidth;
+					}
+				}
+				this.$refs.middleContent.style[transform] = `translate(${offsetWidth}px)`;
+				this.$refs.middleContent.style[transitionDuration] = '300ms';
+				this.touch.init = false;
 			},
 			...mapMutations({
 				setFullScreen: 'set_fullscreen',
@@ -301,14 +359,18 @@
 					this.currentLyric = new LyricParser(res, ({lineNum, txt}) => {
 						console.log(lineNum, txt);
 						this.currentLineNum = lineNum;
+						this.playingLyric = txt;
 						if (lineNum > 5) {
 							const lineEl = this.$refs.lyricLines[lineNum - 5];
-							this.$refs.lyricScroll.scrollToElement(lineEl, 1000);
+							if (lineEl) {
+								this.$refs.lyricScroll.scrollToElement(lineEl, 1000);
+							}
 						} else {
 							this.$refs.lyricScroll.scrollTo(0, 0, 1000);
 						}
 					});
 					if (this.playing) {
+						this.currentLyric.stop();
 						this.currentLyric.play();
 					}
 				});
@@ -420,6 +482,19 @@
 							}
 						}
 					}
+					.playing-lyric-wrapper {
+						margin-top: 30px;
+						width: 100%;
+						text-align: center;
+						height: 30px;
+						justify-content: center;
+						.playing-lyric {
+							height: 20px;
+							line-height: 20px;
+							font-size: @font-size-medium;
+							color: @color-text-l;
+						}
+					}
 				}
 				.middle-r {
 					height: 100%;
@@ -442,6 +517,23 @@
 				position: absolute;
 				bottom: 30px;
 				width: 100%;
+				.dot-wrapper {
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: center;
+					.dot {
+						margin: 0 4px;
+						width: 8px;
+						height: 8px;
+						border-radius: 50%;
+						background-color: @color-text-l;
+					}
+					& .active {
+						width: 20px;
+						border-radius: 4px;
+					}
+				}
+
 				.progress-wrapper {
 					width: 100%;
 					height: 30px;
