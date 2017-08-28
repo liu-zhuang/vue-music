@@ -1,7 +1,8 @@
 <template>
 	<transition	name="slide">
-		<div class="singer-detail">
+		<div class="singer-detail" ref="singerDetail">
 			<music-list
+			ref="musiclist"
 			v-if="songList.length > 0"
 			:title="singer.singerName"
 			:bg-img="singer.avator"
@@ -59,13 +60,10 @@
 		height: 100%;
 		background-color: @color-background;
 	}
-
 	.slide-enter-active, .slide-leave-active {
 		transition: all 0.3s;
 	}	
-
 	.slide-enter, .slide-leave-to {
 		transform: translate3d(100%, 0, 0);
 	}
-	
 </style>

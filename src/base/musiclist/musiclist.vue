@@ -35,10 +35,12 @@
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
 	import {prefixStyle} from 'common/js/dom';
+	import {playlistMixin} from 'common/js/mixin';
 
 	const IMG_HEADER_HEIGHT = 40;
 	const prefixTransform = prefixStyle('transform');
 	export default {
+		mixins: [playlistMixin],
 		name: 'music-list',
 		components: {
 			Scroll,
@@ -99,6 +101,20 @@
 					index,
 					playList
 				});
+			},
+			refresh () {
+				this.$refs.scroll.refresh();
+			},
+			playListHandler (playList) {
+				console.log(playList);
+				if (playList.length > 0) {
+					this.$refs.scroll.$el.style.bottom = '60px';
+				} else {
+					this.$refs.scroll.$el.style.bottom = '';
+				}
+				if (this.$refs.scroll) {
+					this.$refs.scroll.refresh();
+				}
 			},
 			...mapMutations({
 				set_playing: 'set_playing'
@@ -207,7 +223,6 @@
 		}
 		.scroll {
 			width: 100%;
-			height: 100%;
 			position: fixed;
 			bottom: 0;
 			z-index: 30;

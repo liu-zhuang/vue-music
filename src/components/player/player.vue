@@ -135,6 +135,8 @@
 				this.$refs.cdWrapper.style[transform] = `translate3d(-${x}px,${y}px,0) scale(${scale})`;
 				setTimeout(() => {
 					this.setFullScreen(false);
+					this.currentShow = 'cd';
+					this.$refs.middleContent.style[transform] = `translate(0)`;
 				}, 1000);
 			},
 			miniplayerWrapperClick () {
@@ -202,7 +204,7 @@
 					name: 'cdmove',
 					animation,
 					presets: {
-						duration: 2000,
+						duration: 1000,
 						easing: 'linear',
 						delay: 100
 					}
@@ -233,7 +235,6 @@
 				this.audioReady = true;
 			},
 			onEnd (e) {
-				console.log('end');
 				if (this.playMode === playMode.loop) {
 					this.$refs.audio.currentTime = 0;
 					this.$refs.audio.play();
@@ -300,7 +301,6 @@
 						offsetWidth = 0;
 					}
 				} else {
-					console.log(this.touch.percent);
 					if (this.touch.percent < 0.8) {
 						this.currentShow = 'cd';
 						offsetWidth = 0;
@@ -354,10 +354,10 @@
 				if (old.songid === val.songid) {
 					return;
 				}
+				this.currentShow = 'cd';
 				val.getLyric()
 				.then(res => {
 					this.currentLyric = new LyricParser(res, ({lineNum, txt}) => {
-						console.log(lineNum, txt);
 						this.currentLineNum = lineNum;
 						this.playingLyric = txt;
 						if (lineNum > 5) {
@@ -369,6 +369,7 @@
 							this.$refs.lyricScroll.scrollTo(0, 0, 1000);
 						}
 					});
+					this.currentLyric.stop();
 					if (this.playing) {
 						this.currentLyric.stop();
 						this.currentLyric.play();
