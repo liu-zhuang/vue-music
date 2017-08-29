@@ -22,7 +22,7 @@
 		methods: {
 			getDesc (song) {
 				return `${song.singer}·${song.albumname}`;
-			},
+        },
 			onSongClick (index) {
 				this.$emit('songClick', index, this.songList);
 			}
