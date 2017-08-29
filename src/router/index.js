@@ -23,7 +23,7 @@ export default new Router({
 		path: '/recommend',
 		component: Recommend,
 		children: [{
-			path: '/dissDetail/:id',
+			path: 'dissDetail/:id',
 			component: DissDetail
 		}]
 	},

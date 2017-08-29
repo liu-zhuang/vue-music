@@ -9,5 +9,6 @@ export default {
 	playList: [],
 	sequencePlayList: [],
 	currentIndex: -1,
-	playMode: playMode.sequence
+	playMode: playMode.sequence,
+	diss: {}
 };

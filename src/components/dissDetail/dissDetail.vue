@@ -1,152 +1,39 @@
 <template>
-	<div class="dissDetail-wrapper">
-		<div class="back">
-			<i class="icon-back"></i>
+	<transition	name="slide">
+		<div class="singer-detail" ref="singerDetail">
+			<!-- <music-list
+			ref="musiclist"
+			v-if="songList.length > 0"
+			:title="singer.singerName"
+			:bg-img="singer.avator"
+			:songs="songList"></music-list> -->
 		</div>
-		<div class="title">
-			<h3 v-html="title"></h3>
-		</div>
-		<div class="pic" :style="picStyle" ref="img">
-			<div class="filter"></div>
-			<div class="play-wrapper" ref="playWrapper">
-				<i class="icon-play"></i>
-				<p>随机播放全部</p>
-			</div>
-		</div>
-		<div class="layer" ref="layer">
-		</div>
-		<scroll class="scroll" ref="scroll" 
-		:listen-scroll="true"
-		:data="songList"
-		:probe-type="3">
-		<div>
-			<song-list v-if="songList.length > 0" :songList="songList"></song-list>
-		</div>
-	</scroll>
-</div>
+	</transition>
 </template>
 <script>
-	import {mapGetters, mapMutations, mapActions} from 'vuex';
-	import Scroll from 'base/scroll/scroll';
-	import SongList from 'base/songlist/songlist';
-	import {CreateSong} from 'common/js/song';
-	import {prefixStyle} from 'common/js/dom';
-	import {playlistMixin} from 'common/js/mixin';
+	import {mapGetters} from 'vuex';
+	import MusicList from 'base/musiclist/musiclist';
+	// import {ERR_OK} from 'api/config';
 
-	const IMG_HEADER_HEIGHT = 40;
-	const prefixTransform = prefixStyle('transform');
 	export default {
-		mixins: [playlistMixin],
 		name: 'diss-detail',
 		components: {
-			Scroll,
-			SongList
+			MusicList
 		},
 		data () {
 			return {
-				imgHeight: 0,
-				posY: 0,
-				songList: []
 			};
 		},
-		props: {
-			title: {
-				type: String,
-				default: ''
-			},
-			bgImg: {
-				type: String,
-				default: ''
-			},
-			songs: {
-				type: Array,
-				default: null
-			},
-			singerId: {
-				type: String,
-				default: ''
+		created () {
+			// 当在详情页面刷新时，跳转到歌手列表页面
+			if (!this.diss.dissid) {
+				this.$router.push({path: '/recommend'});
 			}
 		},
 		mounted () {
-			this.$nextTick(() => {
-				this.songs.forEach(song => {
-					let {musicData} = song;
-					this.songList.push(CreateSong(musicData));
-				});
-				// 计算顶部背景图的高度，即为下面歌曲列表top的高度
-				this.imgHeight = this.$refs.img.clientHeight;
-				let scroll = this.$refs.scroll.$el; // 因为scroll是Vue Component,因此其html元素为.$el
-				scroll.style.top = this.imgHeight + 'px';
-				this.$refs.layer.style.top = this.imgHeight + 'px';
-			});
-		},
-		methods: {
-			onBackClick () {
-				this.$router.back();
-			},
-			onScroll (pos) {
-				this.posY = pos.y;
-			},
-			onClickPlayRandom () {
-				this.randomPlay({
-					playList: this.songList
-				});
-			},
-			onSongClick (index, playList) {
-				this.play({
-					index,
-					playList
-				});
-			},
-			refresh () {
-				this.$refs.scroll.refresh();
-			},
-			playListHandler (playList) {
-				console.log(playList);
-				if (playList.length > 0) {
-					this.$refs.scroll.$el.style.bottom = '60px';
-				} else {
-					this.$refs.scroll.$el.style.bottom = '';
-				}
-				if (this.$refs.scroll) {
-					this.$refs.scroll.refresh();
-				}
-			},
-			...mapMutations({
-				set_playing: 'set_playing'
-			}),
-			...mapActions({
-				randomPlay: 'randomPlay',
-				play: 'play'
-			})
 		},
 		computed: {
-			picStyle () {
-				return `background-image:url(${this.bgImg})`;
-			},
-			...mapGetters(['singer'])
-		},
-		watch: {
-			posY (newPos) {
-				if (newPos >= 0) {
-					// newPos
-					const percent = Math.abs(newPos / this.imgHeight);
-					const scale = 1 + percent;
-					this.$refs.img.style[prefixTransform] = `scale(${scale})`;
-					this.$refs.img.style.zIndex = 39;
-					this.$refs.playWrapper.style.display = '';
-				} else if (-newPos < (this.imgHeight - IMG_HEADER_HEIGHT)) {
-					this.$refs.layer.style[prefixTransform] = `translateY(${newPos}px)`;
-					this.$refs.img.style.paddingTop = (this.imgHeight - Math.abs(newPos)) + 'px';
-					this.$refs.img.style[prefixTransform] = 'scale(1)';
-					this.$refs.img.style.zIndex = 20;
-					this.$refs.playWrapper.style.display = 'none';
-				} else {
-					this.$refs.img.style.paddingTop = IMG_HEADER_HEIGHT + 'px';
-					this.$refs.layer.style[prefixTransform] = `translateY(${this.imgHeight - IMG_HEADER_HEIGHT}px)`;
-					this.$refs.img.style.zIndex = 35;
-				}
-			}
+			...mapGetters(['diss'])
 		}
 	};
 </script>
