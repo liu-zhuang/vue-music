@@ -20,5 +20,8 @@ export default {
 	},
 	[mutationTypes.SET_CURRENTINDEX] (state, currentIndex) {
 		state.currentIndex = currentIndex;
+	},
+	[mutationTypes.SET_PLAYMODE] (state, playMode) {
+		state.playMode = playMode;
 	}
 };

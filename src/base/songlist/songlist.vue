@@ -1,8 +1,8 @@
 <template>
 	<div class="songlist-wrapper">
 		<ul class="song-container">
-			<li class="song" v-for="song in songList">
-				<div class="content">
+			<li class="song" v-for="(song,index) in songList">
+				<div class="content" @click="onSongClick(index)">
 					<h3 class="song-name">{{song.songname}}</h3>
 					<p class="song-desc">{{getDesc(song)}}</p>
 				</div>
@@ -22,6 +22,9 @@
 		methods: {
 			getDesc (song) {
 				return `${song.singer}·${song.albumname}`;
+        },
+			onSongClick (index) {
+				this.$emit('songClick', index, this.songList);
 			}
 		}
 	};

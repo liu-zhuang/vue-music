@@ -139,6 +139,9 @@
 				// 滑动时的起始位置
 				this.touch.pageYStart = event.pageY;
 			},
+			refresh () {
+				this.$refs.scroll.refresh();
+			},
 			_calcHeight () {
 				// 计算歌手列表中各个group的高度
 				const group = this.$refs.group;

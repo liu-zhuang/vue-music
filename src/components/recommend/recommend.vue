@@ -1,5 +1,5 @@
 <template>
-	<div class="recommend-wrapper">
+	<div class="recommend-wrapper" ref="recommendWrapper">
 		<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
 			<div>
 				<div v-if="sliders.length > 0 " class="slider-wrapper">
@@ -37,8 +37,10 @@
 	import Slider from 'base/slider/slider';
 	import Scroll from 'base/scroll/scroll';
 	import Loading from 'base/loading/loading';
+	import {playlistMixin} from 'common/js/mixin';
 
 	export default {
+		mixins: [playlistMixin],
 		name: 'Recommend',
 		data () {
 			return {
@@ -56,6 +58,14 @@
 			this._getDissList();
 		},
 		methods: {
+			playListHandler (palyList) {
+				if (palyList.length > 0) {
+					this.$refs.recommendWrapper.style.bottom = '60px';
+				} else {
+					this.$refs.recommendWrapper.style.bottom = '';
+				}
+				this.$refs.scroll.refresh();
+			},
 			_getRecommend () {
 				getRecommend()
 				.then(res => {

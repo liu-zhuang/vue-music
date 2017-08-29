@@ -24,7 +24,7 @@
 		:probe-type="3"
 		@scroll="onScroll">
 		<div>
-			<song-list v-if="songList.length > 0" :songList="songList"></song-list>
+			<song-list v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
 		</div>
 	</scroll>
 </div>
@@ -35,10 +35,12 @@
 	import SongList from 'base/songlist/songlist';
 	import {CreateSong} from 'common/js/song';
 	import {prefixStyle} from 'common/js/dom';
+	import {playlistMixin} from 'common/js/mixin';
 
 	const IMG_HEADER_HEIGHT = 40;
 	const prefixTransform = prefixStyle('transform');
 	export default {
+		mixins: [playlistMixin],
 		name: 'music-list',
 		components: {
 			Scroll,
@@ -94,11 +96,32 @@
 					playList: this.songList
 				});
 			},
+			onSongClick (index, playList) {
+				this.play({
+					index,
+					playList
+				});
+			},
+			refresh () {
+				this.$refs.scroll.refresh();
+			},
+			playListHandler (playList) {
+				console.log(playList);
+				if (playList.length > 0) {
+					this.$refs.scroll.$el.style.bottom = '60px';
+				} else {
+					this.$refs.scroll.$el.style.bottom = '';
+				}
+				if (this.$refs.scroll) {
+					this.$refs.scroll.refresh();
+				}
+			},
 			...mapMutations({
 				set_playing: 'set_playing'
 			}),
 			...mapActions({
-				randomPlay: 'randomPlay'
+				randomPlay: 'randomPlay',
+				play: 'play'
 			})
 		},
 		computed: {
@@ -200,7 +223,6 @@
 		}
 		.scroll {
 			width: 100%;
-			height: 100%;
 			position: fixed;
 			bottom: 0;
 			z-index: 30;

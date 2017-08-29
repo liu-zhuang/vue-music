@@ -41,23 +41,21 @@ apiRoutes.get('/getDissList', (req, res) => {
   });
 });
 
-// var apiRoutes = express.Router()
-
-// apiRoutes.get('/getDissList', function (req, res) {
-//   console.log(req.query);
-//   var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
-//   axios.get(url, {
-//     headers: {
-//       referer: 'https://y.qq.com/portal/playlist.html',
-//       // host: 'c.y.qq.com'
-//     },
-//     params: req.query
-//   }).then((response) => {
-//     res.json(response.data)
-//   }).catch((e) => {
-//     console.log(e)
-//   })
-// })
+apiRoutes.get('/getLyric', (req, res) => {
+  let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/portal/player.html'
+    },
+    params: req.query
+  })
+  .then(response => {
+    res.json(response.data);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+});
 
 app.use('/api', apiRoutes);
 var compiler = webpack(webpackConfig)

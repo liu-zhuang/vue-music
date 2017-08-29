@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<div v-if="groupArray.length > 0" class="singer-wrapper">
-			<listview :data="groupArray" @singerClick="onSingerClick"></listview>
+		<div v-if="groupArray.length > 0" class="singer-wrapper" ref="singerWrapper">
+			<listview :data="groupArray" @singerClick="onSingerClick" ref="scroll"></listview>
 		</div>
 		<router-view></router-view>
 	</div>
@@ -13,10 +13,13 @@
 	import Singer from 'common/js/singer';
 	import Listview from 'base/listview/listview';
 	import {mapMutations} from 'vuex';
+	import {playlistMixin} from 'common/js/mixin';
+
 	const HOT_KEY = 'Hot';
 	const HOT_KEYWORD = '热门';
 	const HOT_COUNT = 10;
 	export default {
+		mixins: [playlistMixin],
 		name: 'Singer',
 		components: {
 			Listview
@@ -34,6 +37,14 @@
 			});
 		},
 		methods: {
+			playListHandler (palyList) {
+				if (palyList.length > 0) {
+					this.$refs.singerWrapper.style.bottom = '60px';
+				} else {
+					this.$refs.singerWrapper.style.bottom = '';
+				}
+				this.$refs.scroll.refresh();
+			},
 			onSingerClick (singer) {
 				this.$router.push({path: `/singer/${singer.singerId}`});
 				// this.$store.commit('set_singer', singer); 常规使用，也可以使用语法糖来实现https://vuex.vuejs.org/zh-cn/mutations.html
