@@ -1,17 +1,14 @@
 <template>
-	<div class="musiclist-wrapper">
+	<div class="dissDetail-wrapper">
 		<div class="back">
-			<i class="icon-back" @click="onBackClick"></i>
+			<i class="icon-back"></i>
 		</div>
 		<div class="title">
 			<h3 v-html="title"></h3>
 		</div>
-		<!-- 动态设定背景图，使用width:100,height:0,padding-top:70%的方法让图片纵宽比10:7
-		同时需要设置background-size:cover -->
 		<div class="pic" :style="picStyle" ref="img">
-			<!-- 为背景图增加滤镜效果 -->
 			<div class="filter"></div>
-			<div class="play-wrapper" ref="playWrapper" @click="onClickPlayRandom">
+			<div class="play-wrapper" ref="playWrapper">
 				<i class="icon-play"></i>
 				<p>随机播放全部</p>
 			</div>
@@ -21,15 +18,14 @@
 		<scroll class="scroll" ref="scroll" 
 		:listen-scroll="true"
 		:data="songList"
-		:probe-type="3"
-		@scroll="onScroll">
+		:probe-type="3">
 		<div>
-			<song-list v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
+			<song-list v-if="songList.length > 0" :songList="songList"></song-list>
 		</div>
-	    </scroll>
-    </div>
+	</scroll>
+</div>
 </template>
-<script type="text/javascript">
+<script>
 	import {mapGetters, mapMutations, mapActions} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
 	import SongList from 'base/songlist/songlist';
@@ -41,7 +37,7 @@
 	const prefixTransform = prefixStyle('transform');
 	export default {
 		mixins: [playlistMixin],
-		name: 'music-list',
+		name: 'diss-detail',
 		components: {
 			Scroll,
 			SongList
@@ -155,8 +151,8 @@
 	};
 </script>
 <style scoped lang="less">
-	@import '~less/variable.less';
-	.musiclist-wrapper {
+	@import '~common/less/variable';
+	.dissDetail-wrapper {
 		position: relative;
 		width: 100%;
 		height: 100%;

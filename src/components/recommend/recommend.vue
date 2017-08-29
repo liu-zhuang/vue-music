@@ -14,13 +14,13 @@
 				<div class="recommend-list">
 					<h1 class="list-title">热门歌单推荐</h1>
 					<ul class="dissList">
-						<li class="diss" v-for="diss in dissList">
+						<li class="diss" v-for="diss in dissList" @click="onClickDiss(diss)">
 							<div class="diss-image">
 								<img v-lazy="diss.imgurl"></img>
 							</div>
 							<div class="diss-text">
-								<h2 class="creator" v-html="diss.creator.name"></h2>
-								<p class="dissname" v-html="diss.dissname"></p>
+								<p class="creator" v-html="diss.dissname"></p>
+								<h2 class="dissname" v-html="diss.creator.name"></h2>
 							</div>
 						</li>
 					</ul>
@@ -28,6 +28,7 @@
 			</div>
 			<loading v-if="!dissList.length" ltext="loading..."></loading>
 		</scroll>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -65,6 +66,10 @@
 					this.$refs.recommendWrapper.style.bottom = '';
 				}
 				this.$refs.scroll.refresh();
+			},
+			onClickDiss (diss) {
+				console.log(diss);
+				this.$router.push({path: `/recommend/dissDetail/${diss.dissid}`});
 			},
 			_getRecommend () {
 				getRecommend()
