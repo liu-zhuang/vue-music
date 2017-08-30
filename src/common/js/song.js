@@ -31,11 +31,13 @@ export class Song {
 	}
 };
 
+
 export function CreateSong (musicData) {
 	const image = `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`;
 	const url = `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`;
 	return new Song(musicData.albumid, musicData.albummid, musicData.albumname, getSingerName(musicData.singer), musicData.interval, musicData.songid, musicData.songmid, musicData.songname, image, url);
 };
+
 
 let getSingerName = function (singer) {
 	if (!singer || singer.length === 0) {
