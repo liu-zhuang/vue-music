@@ -357,6 +357,9 @@
 				this.currentShow = 'cd';
 				val.getLyric()
 				.then(res => {
+					if (this.currentLyric) {
+						this.currentLyric.stop();
+					}
 					this.currentLyric = new LyricParser(res, ({lineNum, txt}) => {
 						this.currentLineNum = lineNum;
 						this.playingLyric = txt;
@@ -369,9 +372,7 @@
 							this.$refs.lyricScroll.scrollTo(0, 0, 1000);
 						}
 					});
-					this.currentLyric.stop();
 					if (this.playing) {
-						this.currentLyric.stop();
 						this.currentLyric.play();
 					}
 				});

@@ -2,6 +2,7 @@
 	<transition	name="slide">
 		<div class="diss-detail" ref="singerDetail">
 			<music-list
+			v-if="songList.length > 0"
 			ref="musiclist"
 			:title="title"
 			:bg-img="bgImg"
@@ -14,7 +15,6 @@
 	import MusicList from 'base/musiclist/musiclist';
 	import {getDissInfo} from 'api/recommend';
 	import {ERR_OK} from 'api/config';
-
 	export default {
 		name: 'diss-detail',
 		components: {
@@ -49,7 +49,21 @@
 				.then(res => {
 					if (res.code === ERR_OK) {
 						console.log(res);
-						this.songList = res.cdlist[0].songlist;
+						const songList = res.cdlist[0].songlist;
+						songList.forEach(song => {
+							this.songList.push({
+								musicData: {
+									albumid: song.albumid,
+									albummid: song.albummid,
+									albumname: song.albumname,
+									singer: song.singer,
+									interval: song.interval,
+									songid: song.songid,
+									songmid: song.songmid,
+									songname: song.songname
+								}
+							});
+						});
 					}
 				});
 			}
