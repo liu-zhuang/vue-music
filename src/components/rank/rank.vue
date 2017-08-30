@@ -1,9 +1,13 @@
 <template>
-	<div>
-		<div v-if="rankArray.length > 0" class="rank-wrapper" ref="rankWrapper">
-			<listview :data="rankArray" @singerClick="onRankClick" ref="scroll">
-			</listview>
-		</div>
+	<div class="rank-wrapper">
+		<scroll class="rankList" v-if="rankArray.length > 0" ref="scroll" :data="rankArray">
+			<ul>
+				<li  v-for="rank in rankArray">
+					<img :src="rank.picUrl" alt="">
+					{{rank.topTitle}}
+				</li>
+			</ul>
+		</scroll>
 		<router-view></router-view>
 	</div>
 </template>
@@ -12,10 +16,12 @@
 	import {getRankList} from 'api/rank';
 	import {ERR_OK} from 'api/config';
 	import listview from 'base/listview/listview';
+	import Scroll from 'base/scroll/scroll';
 	export default {
 		name: 'Rank',
 		components: {
-			listview
+			listview,
+			Scroll
 		},
 		data () {
 			return {
@@ -31,6 +37,7 @@
 				getRankList()
 				.then(res => {
 					if (res.code === ERR_OK) {
+						console.log(res.data.topList);
 						this.rankArray = res.data.topList;
 					}
 				})
@@ -44,8 +51,12 @@
 	.rank-wrapper {
 		position: fixed;
 		top: 88px;
-		bottom: 10px;
+		bottom: 0px;
 		width: 100%;
 		overflow: hidden;
+		.rankList {
+			height: 100%;
+			overflow: hidden;
+		}
 	}
 </style>
