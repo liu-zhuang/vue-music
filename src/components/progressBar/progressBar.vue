@@ -108,8 +108,8 @@
 				.progress-btn {
 					position: relative;
 					top: 7px;
-					width: 16px;
-					height: 16px;
+					width: 12px;
+					height: 12px;
 					background-color: @color-theme;
 					border-radius: 50%;
 					border: solid 3px @color-text;

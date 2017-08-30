@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<div v-if="groupArray.length > 0" class="singer-wrapper" ref="singerWrapper">
-			<listview :data="groupArray" @singerClick="onSingerClick" ref="scroll"></listview>
+			<listview :data="groupArray" @singerClick="onSingerClick" ref="scroll">
+			</listview>
 		</div>
 		<router-view></router-view>
 	</div>
