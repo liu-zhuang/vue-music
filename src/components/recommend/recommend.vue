@@ -1,39 +1,43 @@
 <template>
-	<div class="recommend-wrapper" ref="recommendWrapper">
-		<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
-			<div>
-				<div v-if="sliders.length > 0 " class="slider-wrapper">
-					<slider>
-						<div v-for="item in sliders">
-							<a :href="item.linkUrl">
-								<img @load="loadImage":src="item.picUrl" alt="" @click="clickPic">
-							</a>
-						</div>
-					</slider>
-				</div>
-				<div class="recommend-list">
-					<h1 class="list-title">热门歌单推荐</h1>
-					<ul class="dissList">
-						<li class="diss" v-for="diss in dissList">
-							<div class="diss-image">
-								<img v-lazy="diss.imgurl"></img>
+	<div>
+		<div class="recommend-wrapper" ref="recommendWrapper">
+			<scroll ref="scroll" :data="dissList" :probeType="3" class="scrollContainer">
+				<div>
+					<div v-if="sliders.length > 0 " class="slider-wrapper">
+						<slider>
+							<div v-for="item in sliders">
+								<a :href="item.linkUrl">
+									<img @load="loadImage":src="item.picUrl" alt="" @click="clickPic">
+								</a>
 							</div>
-							<div class="diss-text">
-								<h2 class="creator" v-html="diss.creator.name"></h2>
-								<p class="dissname" v-html="diss.dissname"></p>
-							</div>
-						</li>
-					</ul>
+						</slider>
+					</div>
+					<div class="recommend-list">
+						<h1 class="list-title">热门歌单推荐</h1>
+						<ul class="dissList">
+							<li class="diss" v-for="diss in dissList" @click="onClickDiss(diss)">
+								<div class="diss-image">
+									<img v-lazy="diss.imgurl"></img>
+								</div>
+								<div class="diss-text">
+									<p class="creator" v-html="diss.dissname"></p>
+									<h2 class="dissname" v-html="diss.creator.name"></h2>
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
-			</div>
-			<loading v-if="!dissList.length" ltext="loading..."></loading>
-		</scroll>
+				<loading v-if="!dissList.length" ltext="loading..."></loading>
+			</scroll>
+		</div>
+		<router-view></router-view>
 	</div>
 </template>
 
 <script>
 	import { ERR_OK } from 'api/config';
-	import { getRecommend, getDissList } from 'api/recommend';
+	import {mapMutations} from 'vuex';
+	import {getRecommend, getDissList} from 'api/recommend';
 	import Slider from 'base/slider/slider';
 	import Scroll from 'base/scroll/scroll';
 	import Loading from 'base/loading/loading';
@@ -66,6 +70,12 @@
 				}
 				this.$refs.scroll.refresh();
 			},
+			onClickDiss (diss) {
+				console.log(diss);
+				// this.$router.push({path: `/recommend/dissDetail/${diss.dissid}`});
+				this.$router.push({path: `/recommend/${diss.dissid}`});
+				this.setDiss(diss);
+			},
 			_getRecommend () {
 				getRecommend()
 				.then(res => {
@@ -96,7 +106,10 @@
 			},
 			clickPic () {
 				console.log('click pic');
-			}
+			},
+			...mapMutations({
+				setDiss: 'set_diss'
+			})
 		}
 	};
 </script>

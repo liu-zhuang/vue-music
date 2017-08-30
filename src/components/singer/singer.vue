@@ -37,13 +37,17 @@
 			});
 		},
 		methods: {
-			playListHandler (palyList) {
-				if (palyList.length > 0) {
+			playListHandler (playList) {
+				if (playList.length > 0) {
 					this.$refs.singerWrapper.style.bottom = '60px';
 				} else {
-					this.$refs.singerWrapper.style.bottom = '';
+					if (this.$refs.singerWrapper) {
+						this.$refs.singerWrapper.style.bottom = '';
+					}
 				}
-				this.$refs.scroll.refresh();
+				if (this.$refs.scroll) {
+					this.$refs.scroll.refresh();
+				}
 			},
 			onSingerClick (singer) {
 				this.$router.push({path: `/singer/${singer.singerId}`});

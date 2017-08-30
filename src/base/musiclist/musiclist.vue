@@ -26,8 +26,8 @@
 		<div>
 			<song-list v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
 		</div>
-	</scroll>
-</div>
+	    </scroll>
+    </div>
 </template>
 <script type="text/javascript">
 	import {mapGetters, mapMutations, mapActions} from 'vuex';

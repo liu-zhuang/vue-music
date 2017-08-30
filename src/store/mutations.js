@@ -23,5 +23,8 @@ export default {
 	},
 	[mutationTypes.SET_PLAYMODE] (state, playMode) {
 		state.playMode = playMode;
+	},
+	[mutationTypes.SET_DISS] (state, diss) {
+		state.diss = diss;
 	}
 };

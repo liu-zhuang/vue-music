@@ -8,4 +8,5 @@ export const SET_PLAYLIST = 'set_playlist';
 export const SET_SEQUENCEPLAYLIST = 'set_sequenceplaylist';
 export const SET_CURRENTINDEX = 'set_currentindex';
 export const SET_PLAYMODE = 'set_playmode';
+export const SET_DISS = 'set_diss';
 
