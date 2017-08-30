@@ -56,5 +56,8 @@ export function getDissInfo (disstid) {
 		needNewCode: 0
 	});
 
-	return fetchJsonp(url, data, options);
+	return fetchJsonp(url, data, {
+		jsonpCallbackFunction: 'playlistinfoCallback',
+		jsonpCallback: 'jsonpCallback'
+	});
 }

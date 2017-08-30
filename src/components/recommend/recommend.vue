@@ -37,7 +37,7 @@
 <script>
 	import { ERR_OK } from 'api/config';
 	import {mapMutations} from 'vuex';
-	import { getRecommend, getDissList, getDissInfo } from 'api/recommend';
+	import {getRecommend, getDissList} from 'api/recommend';
 	import Slider from 'base/slider/slider';
 	import Scroll from 'base/scroll/scroll';
 	import Loading from 'base/loading/loading';
@@ -73,8 +73,7 @@
 			onClickDiss (diss) {
 				console.log(diss);
 				// this.$router.push({path: `/recommend/dissDetail/${diss.dissid}`});
-				this.$router.push({path: `/recommend/dissDetail/${diss.dissid}`});
-				this._getDissInfo();
+				this.$router.push({path: `/recommend/${diss.dissid}`});
 				this.setDiss(diss);
 			},
 			_getRecommend () {
@@ -97,12 +96,6 @@
 				})
 				.catch(err => {
 					console.log(err);
-				});
-			},
-			_getDissInfo () {
-				getDissInfo()
-				.then(res => {
-					console.log(res);
 				});
 			},
 			loadImage () {

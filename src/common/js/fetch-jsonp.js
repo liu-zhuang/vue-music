@@ -3,7 +3,6 @@ import OrginFetchJsonP from 'fetch-jsonp'; // https://github.com/camsong/fetch-j
 export default function fetchJsonp (url, data, option) {
 	let newUrl = getUrl(url, data);
 	return new Promise((resolve, reject) => {
-		debugger;
 		OrginFetchJsonP(newUrl, option || {})
 		.then(response => {
 			return response.json();
