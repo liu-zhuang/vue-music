@@ -3,7 +3,7 @@
  * 固定的几个值
  */
  export const queryParameters = {
- 	g_tk: 5381
+ 	g_tk: 606584692
  };
 
 /**

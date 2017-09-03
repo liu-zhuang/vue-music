@@ -39,7 +39,7 @@
 		},
 		methods: {
 			playListHandler (playList) {
-				if (playList.length > 0) {
+				if (playList.length > 0 && this.$refs.singerWrapper) {
 					this.$refs.singerWrapper.style.bottom = '60px';
 				} else {
 					if (this.$refs.singerWrapper) {

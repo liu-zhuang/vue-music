@@ -24,7 +24,7 @@
 		:probe-type="3"
 		@scroll="onScroll">
 		<div>
-			<song-list v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
+			<song-list :rank="rank" v-if="songList.length > 0" :songList="songList" @songClick="onSongClick"></song-list>
 		</div>
 	    </scroll>
     </div>
@@ -69,6 +69,10 @@
 			singerId: {
 				type: String,
 				default: ''
+			},
+			rank: {
+				type: Boolean,
+				default: false
 			}
 		},
 		mounted () {
