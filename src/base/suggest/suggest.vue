@@ -83,6 +83,7 @@
 	@import "~common/less/variable";
 	.scroll-wrapper {
 		height: 100%;
+		overflow: hidden;
 		.sugger-wrapper {
 			.singerList {
 				.singer-wrapper {
