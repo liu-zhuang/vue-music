@@ -24,6 +24,10 @@
 			listenScroll: {
 				type: Boolean,
 				default: false
+			},
+			pullup: {
+				type: Boolean,
+				default: false
 			}
 		},
 		mounted () {

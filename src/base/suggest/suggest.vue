@@ -1,5 +1,5 @@
 <template>
-	<scroll ref="scroll" :data="songList"  :probeType="3" class="scroll-wrapper">
+	<scroll ref="scroll" :data="songList"  :probeType="3" class="scroll-wrapper" :pullup="pullup" @scrollToEnd="onScrollToEnd">
 		<div class="sugger-wrapper">
 			<ul class="singerList" v-if="singerList.length > 0 && singerList[0].singerId">
 				<li @click="onSingerClick(singer)" class="singer-wrapper" v-for="singer in singerList">
@@ -19,10 +19,12 @@
 				</li>
 			</ul>
 		</div>
+		<loading v-if="loading" ltext="上拉加载中..."></loading>
 	</scroll>
 </template>
 <script>
 	import {search} from 'api/search';
+	import Loading from 'base/loading/loading';
 	import {CreateSong} from 'common/js/song';
 	import Singer from 'common/js/singer';
 	import {mapMutations} from 'vuex';
@@ -32,7 +34,8 @@
 	export default {
 		name: 'suggest',
 		components: {
-			Scroll
+			Scroll,
+			Loading
 		},
 		props: {
 			keyword: {
@@ -46,6 +49,8 @@
 		},
 		data () {
 			return {
+				pullup: true,
+				loading: false,
 				singerList: [],
 				songList: [],
 				currentPage: 1
@@ -56,6 +61,29 @@
 				console.log(singer);
 				this.$router.push({path: `/singer/${singer.singerId}`});
 				this.setSinger(singer);
+			},
+			onScrollToEnd () {
+				this.loading = true;
+				this.currentPage += 1;
+				search(this.keyword, this.currentPage, PAGE_SIZE, this.showSinger)
+				.then(res => {
+					res.data.song.list.forEach(song => {
+						let musicData = CreateSong({
+							albumid: song.albumid,
+							albummid: song.albummid,
+							albumname: song.albumname,
+							singer: song.singer,
+							interval: song.interval,
+							songid: song.songid,
+							songmid: song.songmid,
+							songname: song.songname
+						});
+						this.songList.push(musicData);
+					});
+				});
+				setTimeout(() => {
+					this.loading = false;
+				}, 1000);
 			},
 			...mapMutations({
 				setSinger: 'set_singer'
