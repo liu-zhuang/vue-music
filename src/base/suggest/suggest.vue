@@ -2,7 +2,7 @@
 	<scroll ref="scroll" :data="songList"  :probeType="3" class="scroll-wrapper">
 		<div class="sugger-wrapper">
 			<ul class="singerList" v-if="singerList.length > 0 && singerList[0].singerId">
-				<li class="singer-wrapper" v-for="singer in singerList">
+				<li @click="onSingerClick(singer)" class="singer-wrapper" v-for="singer in singerList">
 					<img class="singer-img" :src="singer.avator">
 					<div class="singer-txt">
 						<p class="singer-name" v-html="singer.singerName"></p>
@@ -25,7 +25,10 @@
 	import {search} from 'api/search';
 	import {CreateSong} from 'common/js/song';
 	import Singer from 'common/js/singer';
+	import {mapMutations} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
+	const PAGE_SIZE = 20;
+
 	export default {
 		name: 'suggest',
 		components: {
@@ -44,8 +47,19 @@
 		data () {
 			return {
 				singerList: [],
-				songList: []
+				songList: [],
+				currentPage: 1
 			};
+		},
+		methods: {
+			onSingerClick (singer) {
+				console.log(singer);
+				this.$router.push({path: `/singer/${singer.singerId}`});
+				this.setSinger(singer);
+			},
+			...mapMutations({
+				setSinger: 'set_singer'
+			})
 		},
 		watch: {
 			keyword (val) {
@@ -54,7 +68,7 @@
 				if (!val) {
 					return;
 				}
-				search(this.keyword, 1, 20, this.showSinger)
+				search(this.keyword, this.currentPage, PAGE_SIZE, this.showSinger)
 				.then(res => {
 					res.data.song.list.forEach(song => {
 						let musicData = CreateSong({

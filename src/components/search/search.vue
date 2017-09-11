@@ -1,19 +1,22 @@
 <template>
-	<div class="search-wrapper">
-		<div class="searchbox-wrapper">
-			<search-box :hotkey="hotkey" @hotkeyChange="onHotkeyChange"></search-box>
-		</div>
-		<div class="hot-wrapper" v-show="!hotkey">
-			<div class="hot-title">
-				热门搜索
+	<div>
+		<div class="search-wrapper">
+			<div class="searchbox-wrapper">
+				<search-box :hotkey="hotkey" @hotkeyChange="onHotkeyChange"></search-box>
 			</div>
-			<ul class="hotword-wrapper">
-				<li v-for="word in hotwordArray" @click="onHotClick(word)" class="hotword">{{word}}</li>
-			</ul>
+			<div class="hot-wrapper" v-show="!hotkey">
+				<div class="hot-title">
+					热门搜索
+				</div>
+				<ul class="hotword-wrapper">
+					<li v-for="word in hotwordArray" @click="onHotClick(word)" class="hotword">{{word}}</li>
+				</ul>
+			</div>
+			<div class="suggest-wrapper" v-show="hotkey">
+				<suggest :keyword="hotkey" :show-singer="true"></suggest>
+			</div>
 		</div>
-		<div class="suggest-wrapper" v-if="hotkey">
-			<suggest :keyword="hotkey" :show-singer="true"></suggest>
-		</div>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -38,7 +41,9 @@
 		},
 		methods: {
 			onHotClick (hot) {
-				console.log(hot);
+				if (hot.endsWith(' ')) {
+					hot = hot.substring(0, hot.length - 1);
+				}
 				this.hotkey = hot;
 			},
 			onHotkeyChange (val) {
