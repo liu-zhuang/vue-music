@@ -12,3 +12,17 @@ export function shuffle (list) {
 	}
 	return _list;
 };
+
+export function debounce (func, delay) {
+	// 简单实现节流  可以参考underscore的源码实现
+	// 参考文档：http://www.cnblogs.com/fsjohnhuang/p/4147810.html
+	let timer;
+	return function (...args) {
+		if (timer) {
+			clearTimeout(timer);
+		}
+		timer = setTimeout(() => {
+			func.apply(this, args);
+		}, delay);
+	};
+}

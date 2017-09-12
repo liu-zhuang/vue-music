@@ -6,6 +6,8 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import {debounce} from 'common/js/utility';
+
 	export default {
 		name: 'SearchBox',
 		data () {
@@ -23,15 +25,18 @@
 				default: ''
 			}
 		},
+		created () {
+			// 因为需要使用节流，因此不在watch中监控searchKey的变化
+			this.$watch('searchKey', debounce((newVal) => {
+				this.$emit('hotkeyChange', newVal);
+			}, 1000));
+		},
 		methods: {
 			onDissmiss () {
 				this.searchKey = '';
 			}
 		},
 		watch: {
-			searchKey (newVal) {
-				this.$emit('hotkeyChange', newVal);
-			},
 			hotkey (newVal) {
 				this.searchKey = newVal;
 			}

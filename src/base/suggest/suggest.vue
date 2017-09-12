@@ -18,8 +18,20 @@
 					</div>
 				</li>
 			</ul>
+
+			<div v-show="showPullTips" class="bottomline-wrapper" ref="pull">
+				<span class="left-line"></span>
+				<span class="txt">上拉加载更多</span>
+				<span class="right-line"></span>
+			</div>
+			<div v-show="atEnd" class="bottomline-wrapper" ref="bottomline">
+				<span class="left-line"></span>
+				<span class="txt">我是有底线的</span>
+				<span class="right-line"></span>
+			</div>
 		</div>
-		<loading v-if="loading" ltext="上拉加载中..."></loading>
+		<loading v-if="loading" ltext="拼命加载中..."></loading>
+
 	</scroll>
 </template>
 <script>
@@ -53,7 +65,9 @@
 				loading: false,
 				singerList: [],
 				songList: [],
-				currentPage: 1
+				currentPage: 1,
+				totalResult: 0,
+				atEnd: false
 			};
 		},
 		methods: {
@@ -63,6 +77,10 @@
 				this.setSinger(singer);
 			},
 			onScrollToEnd () {
+				if (this.currentPage * PAGE_SIZE >= this.totalResult) {
+					this.atEnd = true;
+					return;
+				}
 				this.loading = true;
 				this.currentPage += 1;
 				search(this.keyword, this.currentPage, PAGE_SIZE, this.showSinger)
@@ -89,8 +107,23 @@
 				setSinger: 'set_singer'
 			})
 		},
+		computed: {
+			showPullTips () {
+				if (this.songList.length >= PAGE_SIZE) {
+					if (!this.atEnd) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		},
 		watch: {
 			keyword (val) {
+				this.currentPage = 1;
+				this.atEnd = false;
 				this.songList = [];
 				this.singerList = [];
 				if (!val) {
@@ -98,23 +131,28 @@
 				}
 				search(this.keyword, this.currentPage, PAGE_SIZE, this.showSinger)
 				.then(res => {
-					res.data.song.list.forEach(song => {
-						let musicData = CreateSong({
-							albumid: song.albumid,
-							albummid: song.albummid,
-							albumname: song.albumname,
-							singer: song.singer,
-							interval: song.interval,
-							songid: song.songid,
-							songmid: song.songmid,
-							songname: song.songname
-						});
-						this.songList.push(musicData);
-					});
-					if (res.data.zhida) {
-						let temp = res.data.zhida;
-						let singer = new Singer(temp.singermid, temp.singername, temp.singerid);
-						this.singerList.push(singer);
+					if (res && res.data) {
+						if (res.data.song && res.data.song.list) {
+							this.totalResult = res.data.song.totalnum;
+							res.data.song.list.forEach(song => {
+								let musicData = CreateSong({
+									albumid: song.albumid,
+									albummid: song.albummid,
+									albumname: song.albumname,
+									singer: song.singer,
+									interval: song.interval,
+									songid: song.songid,
+									songmid: song.songmid,
+									songname: song.songname
+								});
+								this.songList.push(musicData);
+							});
+						}
+						if (res.data.zhida) {
+							let temp = res.data.zhida;
+							let singer = new Singer(temp.singermid, temp.singername, temp.singerid);
+							this.singerList.push(singer);
+						}
 					}
 				});
 			}
@@ -130,51 +168,77 @@
 			.singerList {
 				.singer-wrapper {
 					width: 100%;
-				// border-bottom: 1px solid @color-text-d;
-				color: @color-text-d;
-				display: flex;
-				flex-flow: row nowrap;
-				align-items: center;
-				padding: 5px;
-				.singer-img {
-					width: 40px;
-					height: 40px;
-					border-radius: 50%;
-					margin-right: 10px;
-				}
-				.singer-txt {
-					font-size: 14px;
-				}
-			}
-		}
-		.songList {
-			.song-wrapper {
-				width: 100%;
-				color: @color-text-d;
-				display: flex;
-				flex-flow: row nowrap;
-				align-items: center;
-				padding: 5px;
-				.music-icon{
-					width: 32px;
-					height: 32px;
-					font-size: 24px;
-					margin-right: 10px;
-				}
-				.song-text {
+					// border-bottom: 1px solid @color-text-d;
+					color: @color-text-d;
 					display: flex;
-					flex-flow: column;
-					.name {
-						font-size: 16px;
-						margin-bottom: 5px;
+					flex-flow: row nowrap;
+					align-items: center;
+					padding: 5px;
+					.singer-img {
+						width: 40px;
+						height: 40px;
+						border-radius: 50%;
+						margin-right: 10px;
 					}
-					.singer	{
-						font-size: 12px;
+					.singer-txt {
+						font-size: 14px;
 					}
 				}
 			}
+			.songList {
+				.song-wrapper {
+					width: 100%;
+					color: @color-text-d;
+					display: flex;
+					flex-flow: row nowrap;
+					align-items: center;
+					padding: 5px;
+					.music-icon{
+						width: 32px;
+						height: 32px;
+						font-size: 24px;
+						margin-right: 10px;
+					}
+					.song-text {
+						display: flex;
+						flex-flow: column;
+						.name {
+							font-size: 16px;
+							margin-bottom: 5px;
+						}
+						.singer	{
+							font-size: 12px;
+						}
+					}
+				}
+			}
+			.bottomline-wrapper {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: center;
+				margin-top: 10px;
+				.left-line {
+					flex: 1 1 auto;
+					height: 1px;
+					background-color: @color-text-d;
+					margin: 0 10px 0 25px;;
+				}
+				.txt {
+					flex: 0 0 auto;
+					font-size: 12px;
+					color: @color-text-d;
+					text-align:center;
+				}
+				.right-line {
+					flex: 1 1 auto;
+					height: 1px;
+					background-color: @color-text-d;
+					margin: 0 25px 0 10px;
+				}
+			}
+			
 		}
+
 	}
-}
 
 </style>
