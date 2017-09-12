@@ -54,3 +54,53 @@ let findIndex = function (song, list) {
 		commit(mutationTypes.SET_CURRENTINDEX, index);
 	}
 };
+
+export const insertSong = function ({commit, state}, song) {
+	// 当前音乐列表
+	let playList = state.playList.slice(0);
+	// 当前顺序音乐列表
+	let sequencePlayList = state.sequencePlayList.slice(0);
+	// 当前序列号
+	let currentIndex = state.currentIndex;
+	// 当前歌曲
+	let currentSong = playList[currentIndex];
+
+	// 待插入的歌曲在播放列表中的位置(可能)
+	let findex = findIndex(song, playList);
+
+	// 在当前位置之后加入待插入的歌曲
+	playList.splice(++currentIndex, 0, song);
+
+	if (findex > -1) {
+		// 如果待插入的歌已存在，则删除老的
+		if (findex < currentIndex) {
+			// 位于当前位置之前，则删除并将currentIndex-1
+			playList.splice(findex, 1);
+			currentIndex--;
+		} else {
+			// 位于当前位置之后，则移除，注意由于插入了一个新的，因此index需要+1
+			playList.splice(findex + 1, 1);
+		}
+	}
+
+	// 有序列表也是一样的操作
+	let currentSIndex = findIndex(currentSong, sequencePlayList) + 1;
+
+	let fsIndex = findIndex(song, sequencePlayList);
+
+	sequencePlayList.splice(currentSIndex, 0, song);
+
+	if (fsIndex > -1) {
+		if (currentSIndex > fsIndex) {
+			sequencePlayList.splice(fsIndex, 1);
+		} else {
+			sequencePlayList.splice(fsIndex + 1, 1);
+		}
+	}
+
+	commit(mutationTypes.SET_PLAYLIST, playList);
+	commit(mutationTypes.SET_SEQUENCEPLAYLIST, sequencePlayList);
+	commit(mutationTypes.SET_CURRENTINDEX, currentIndex);
+	commit(mutationTypes.SET_FULLSCREEN, true);
+	commit(mutationTypes.SET_PLAYING, true);
+};

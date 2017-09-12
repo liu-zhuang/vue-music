@@ -10,7 +10,7 @@
 				</li>
 			</ul>
 			<ul class="songList">
-				<li class="song-wrapper" v-for="suggest in songList">
+				<li @click="onSongClick(suggest)" class="song-wrapper" v-for="suggest in songList">
 					<i class="icon-music music-icon"></i>
 					<div class="song-text">
 						<div class="name" v-html="suggest.songname"></div>
@@ -31,7 +31,6 @@
 			</div>
 		</div>
 		<loading v-if="loading" ltext="拼命加载中..."></loading>
-
 	</scroll>
 </template>
 <script>
@@ -39,8 +38,9 @@
 	import Loading from 'base/loading/loading';
 	import {CreateSong} from 'common/js/song';
 	import Singer from 'common/js/singer';
-	import {mapMutations} from 'vuex';
+	import {mapMutations, mapActions} from 'vuex';
 	import Scroll from 'base/scroll/scroll';
+
 	const PAGE_SIZE = 20;
 
 	export default {
@@ -72,9 +72,11 @@
 		},
 		methods: {
 			onSingerClick (singer) {
-				console.log(singer);
 				this.$router.push({path: `/singer/${singer.singerId}`});
 				this.setSinger(singer);
+			},
+			onSongClick (song) {
+				this.addSong2List(song);
 			},
 			onScrollToEnd () {
 				if (this.currentPage * PAGE_SIZE >= this.totalResult) {
@@ -105,6 +107,9 @@
 			},
 			...mapMutations({
 				setSinger: 'set_singer'
+			}),
+			...mapActions({
+				addSong2List: 'insertSong'
 			})
 		},
 		computed: {
@@ -236,9 +241,8 @@
 					margin: 0 25px 0 10px;
 				}
 			}
-			
+
 		}
 
 	}
-
 </style>

@@ -12,7 +12,7 @@
 					<li v-for="word in hotwordArray" @click="onHotClick(word)" class="hotword">{{word}}</li>
 				</ul>
 			</div>
-			<div class="suggest-wrapper" v-show="hotkey">
+			<div class="suggest-wrapper" v-show="hotkey" ref="suggest">
 				<suggest :keyword="hotkey" :show-singer="true"></suggest>
 			</div>
 		</div>
@@ -24,7 +24,10 @@
 	import SearchBox from 'com/searchBox/searchBox';
 	import Suggest from 'base/suggest/suggest';
 	import {getHotKey} from 'api/search';
+	import {playlistMixin} from 'common/js/mixin';
+
 	export default {
+		mixins: [playlistMixin],
 		name: 'Search',
 		components: {
 			SearchBox,
@@ -40,6 +43,14 @@
 			this._getHotWord();
 		},
 		methods: {
+			playListHandler (palyList) {
+				if (palyList.length > 0) {
+					this.$refs.suggest.style.bottom = '60px';
+				} else {
+					this.$refs.suggest.style.bottom = '';
+				}
+				this.$refs.scroll.refresh();
+			},
 			onHotClick (hot) {
 				if (hot.endsWith(' ')) {
 					hot = hot.substring(0, hot.length - 1);
