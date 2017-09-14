@@ -8,6 +8,7 @@ let findIndex = function (song, list) {
 	});
 };
 
+
 /**
  * [随机播放action]
  * @param  {[type]} options.commit   [context.commit]
@@ -15,6 +16,7 @@ let findIndex = function (song, list) {
  * https://vuex.vuejs.org/zh-cn/actions.html?q=
  */
  export const randomPlay = function ({commit}, {playList}) {
+
 	// 播放状态设为true
 	commit(mutationTypes.SET_PLAYING, true);
 	// 是否全屏设为true
