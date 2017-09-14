@@ -21,6 +21,9 @@ npm run build --report
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 
+# 文件说明
+
+
 │  App.vue                             主页面
 │  main.js                             启动文件
 │  
@@ -142,3 +145,15 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
         mutations.js
         state.js
         
+
+# 分支说明
+各个分支记录了各个大模块开发的过程
+1. [路由+顶部导航](https://github.com/liu-zhuang/vue-music/tree/%E8%B7%AF%E7%94%B1+%E9%A1%B6%E9%83%A8%E5%AF%BC%E8%88%AA)
+2. [推荐页面](https://github.com/liu-zhuang/vue-music/tree/%E6%8E%A8%E8%8D%90%E9%A1%B5%E9%9D%A2)
+3. [推荐歌曲详情](https://github.com/liu-zhuang/vue-music/tree/%E6%8E%A8%E8%8D%90%E6%AD%8C%E5%8D%95%E8%AF%A6%E6%83%85)
+4. [歌手页面](https://github.com/liu-zhuang/vue-music/tree/%E6%AD%8C%E6%89%8B%E9%A1%B5%E9%9D%A2)
+5. [歌手详情](https://github.com/liu-zhuang/vue-music/tree/%E6%AD%8C%E6%89%8B%E8%AF%A6%E6%83%85)
+6. [歌曲播放](https://github.com/liu-zhuang/vue-music/tree/%E6%AD%8C%E6%9B%B2%E6%92%AD%E6%94%BE)
+7. [排行榜](https://github.com/liu-zhuang/vue-music/tree/%E6%8E%92%E8%A1%8C%E6%A6%9C)
+8. [搜索](https://github.com/liu-zhuang/vue-music/tree/%E6%90%9C%E7%B4%A2%E9%A1%B5)
+
