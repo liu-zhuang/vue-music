@@ -23,7 +23,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 # 文件说明
 
-
+```
 │  App.vue                             主页面
 │  main.js                             启动文件
 │  
@@ -144,7 +144,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
         mutation-types.js
         mutations.js
         state.js
-        
+```        
 
 # 分支说明
 各个分支记录了各个大模块开发的过程
