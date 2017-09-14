@@ -10,7 +10,7 @@
 				</div>
 			</div>
 		</div>		
-		<ul class="shortcut">
+		<ul class="shortcut" v-show="shortcutList.length > 0">
 			<li class="item" v-for="(shortcut, index) in shortcutList"
 			@touchstart.stop.prevent="onTouchStartShortcut"
 			@touchmove.stop.prevent="onTouchMoveShortcut"

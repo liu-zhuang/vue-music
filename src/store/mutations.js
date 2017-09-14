@@ -26,5 +26,8 @@ export default {
 	},
 	[mutationTypes.SET_DISS] (state, diss) {
 		state.diss = diss;
+	},
+		[mutationTypes.SET_RANK] (state, rank) {
+		state.rank = rank;
 	}
 };

@@ -149,11 +149,12 @@
 				} else {
 					this.$refs.audio.pause();
 				}
-				if (this.currentLyric) {
+				if (this.currentLyric && this.audioReady) {
 					this.currentLyric.togglePlay();
 				}
 			},
 			prevClick () {
+				this.audioReady = false;
 				if (this.currentIndex > 0) {
 					this.setCurrentindex(this.currentIndex - 1);
 				} else {
@@ -170,6 +171,7 @@
 				}
 			},
 			nextClick () {
+				this.audioReady = false;
 				if (this.currentIndex === this.playList.length - 1) {
 					this.setCurrentindex(0);
 				} else {
@@ -372,7 +374,7 @@
 							this.$refs.lyricScroll.scrollTo(0, 0, 1000);
 						}
 					});
-					if (this.playing) {
+					if (this.playing && this.$refs.audio.readyState === 4) {
 						this.currentLyric.play();
 					}
 				});

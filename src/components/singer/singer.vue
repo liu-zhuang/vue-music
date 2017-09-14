@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<div v-if="groupArray.length > 0" class="singer-wrapper" ref="singerWrapper">
-			<listview :data="groupArray" @singerClick="onSingerClick" ref="scroll"></listview>
+			<listview :data="groupArray" @singerClick="onSingerClick" ref="scroll">
+			</listview>
 		</div>
 		<router-view></router-view>
 	</div>
@@ -38,7 +39,7 @@
 		},
 		methods: {
 			playListHandler (playList) {
-				if (playList.length > 0) {
+				if (playList.length > 0 && this.$refs.singerWrapper) {
 					this.$refs.singerWrapper.style.bottom = '60px';
 				} else {
 					if (this.$refs.singerWrapper) {
