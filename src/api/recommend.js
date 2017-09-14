@@ -13,8 +13,8 @@ export function getRecommend () {
 }
 
 export function getDissList () {
-	// const url = '/api/getDissList';
-	const url = 'http://liuz.top/home/getdisslist';
+	const url = '/api/getDissList';
+	// const url = 'http://liuz.top/home/getdisslist';
 	const data = Object.assign({}, queryParameters, {
 		rnd: Math.random(),
 		loginUin: 70458055,
@@ -35,8 +35,8 @@ export function getDissList () {
 			params: data
 		})
 		.then(res => {
-			resolve(JSON.parse(res.data));
-			// resolve(res.data);
+			// resolve(JSON.parse(res.data));
+			resolve(res.data);
 		})
 		.catch(err => {
 			reject(err);

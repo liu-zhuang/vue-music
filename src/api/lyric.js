@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export function getLyric (songId) {
-	// const url = '/api/getLyric';
-	const url = 'http://liuz.top/home/getLyric';
+	const url = '/api/getLyric';
+	// const url = 'http://liuz.top/home/getLyric';
 	const data = {
 		pcachetime: +new Date(),
 		songmid: songId,
