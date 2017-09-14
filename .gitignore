@@ -15,3 +15,5 @@ yarn-error.log*
 Tree.MD
 
 package-lock.json
+tree.txt
+*.txt
