@@ -105,6 +105,9 @@
 					this.loading = false;
 				}, 1000);
 			},
+			refresh () {
+				this.$refs.scroll.refresh();
+			},
 			...mapMutations({
 				setSinger: 'set_singer'
 			}),

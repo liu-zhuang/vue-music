@@ -13,7 +13,7 @@
 				</ul>
 			</div>
 			<div class="suggest-wrapper" v-show="hotkey" ref="suggest">
-				<suggest :keyword="hotkey" :show-singer="true"></suggest>
+				<suggest ref="suggestComponent" :keyword="hotkey" :show-singer="true"></suggest>
 			</div>
 		</div>
 		<router-view></router-view>
@@ -49,7 +49,7 @@
 				} else {
 					this.$refs.suggest.style.bottom = '';
 				}
-				this.$refs.scroll.refresh();
+				this.$refs.suggestComponent.refresh();
 			},
 			onHotClick (hot) {
 				if (hot.endsWith(' ')) {
